@@ -3,7 +3,7 @@ import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 
-const schema = z
+let signUpSchema = z
   .object({
     email: z.string().email(),
     password: z
@@ -30,7 +30,7 @@ const schema = z
   });
 const signupAction = async (_prevState: any, formData: FormData) => {
   const rawData = Object.fromEntries(formData);
-  const validatedDate = schema.safeParse(rawData);
+  const validatedDate = signUpSchema.safeParse(rawData);
   if (validatedDate.error) {
     return { error: validatedDate.error.flatten(), data: rawData };
   }
@@ -56,4 +56,27 @@ const signupAction = async (_prevState: any, formData: FormData) => {
   }
 };
 
-export { signupAction };
+const signInSchema = z.object({
+  email: z.string().min(1),
+  password: z.string().min(1),
+});
+const signinAction = async (_prevState: any, formData: FormData) => {
+  const rawData = Object.fromEntries(formData);
+  const validatedData = signInSchema.safeParse(rawData);
+  if (validatedData.error) {
+    return { error: validatedData.error.flatten(), data: rawData };
+  }
+  try {
+    const res = await signIn("credentials", {
+      ...validatedData.data,
+      redirect: false,
+    });
+    console.log(res.error);
+  } catch (e) {
+    const formError = { formErrors: "Email and password doesn not match" };
+    return { error: formError, data: rawData };
+  }
+  redirect("/profile");
+};
+
+export { signupAction, signinAction };

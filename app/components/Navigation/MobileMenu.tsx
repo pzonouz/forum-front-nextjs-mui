@@ -3,6 +3,7 @@
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
+import Link from "next/link";
 
 const MobileMenu = ({ pages }: { pages: string[] }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -36,7 +37,7 @@ const MobileMenu = ({ pages }: { pages: string[] }) => {
         sx={{ display: { xs: "block", md: "none" } }}
       >
         {pages.map((page) => (
-          <MenuItem key={page} onClick={handleCloseNavMenu}>
+          <MenuItem key={page} component={Link} href={"/" + page.toLowerCase()}>
             <Typography sx={{ textAlign: "center" }}>{page}</Typography>
           </MenuItem>
         ))}

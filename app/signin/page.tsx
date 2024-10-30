@@ -1,8 +1,16 @@
 "use client";
 import { LoadingButton } from "@mui/lab";
-import { Box, FormHelperText, TextField, Typography } from "@mui/material";
+// import { Link as NextLink } from "next/link";
+import {
+  Box,
+  FormHelperText,
+  Link as MaterialLink,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useActionState, useEffect } from "react";
-import { signinAction } from "../actions/SigninAction";
+import { signinAction } from "../actions/Auth";
+import Link from "next/link";
 
 const page = () => {
   const [state, action, loading] = useActionState(signinAction, null);
@@ -51,6 +59,9 @@ const page = () => {
       <LoadingButton loading={loading} type="submit" variant="contained">
         Sign In
       </LoadingButton>
+      <MaterialLink component={Link} href="/signup">
+        Don't have an account? Sign Out
+      </MaterialLink>
     </Box>
   );
 };

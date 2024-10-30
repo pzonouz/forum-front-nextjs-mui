@@ -4,8 +4,8 @@ import localFont from "next/font/local";
 import { ThemeProvider } from "@mui/material/styles";
 import "./globals.css";
 import theme from "./theme";
-import { ResponsiveAppBar } from "./components/AppBar";
 import { SessionProvider } from "next-auth/react";
+import { ResponsiveAppBar } from "./components/Navigation/AppBar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

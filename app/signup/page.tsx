@@ -1,9 +1,15 @@
 "use client";
 
-import { Box, FormHelperText, TextField, Typography } from "@mui/material";
-import { useActionState, useEffect } from "react";
+import {
+  Box,
+  FormHelperText,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useActionState } from "react";
 import { LoadingButton } from "@mui/lab";
-import { signupAction } from "../actions/SignupAction";
+import { signupAction } from "../actions/Auth";
 
 export default function SignUp() {
   const [state, action, loading] = useActionState(signupAction, null);
@@ -75,6 +81,7 @@ export default function SignUp() {
         <LoadingButton loading={loading} type="submit" variant="contained">
           Sign Up
         </LoadingButton>
+        <Link href="/signin">Already have an account?</Link>
       </Box>
     </Box>
   );

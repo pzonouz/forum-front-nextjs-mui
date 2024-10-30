@@ -3,11 +3,11 @@ import { AppBar, Container, Toolbar, Typography } from "@mui/material";
 import AdbIcon from "@mui/icons-material/Adb";
 import { MobileMenu } from "./MobileMenu";
 import { DesktopMenu } from "./DesktopMenu";
-import { UserMenu } from "./UserMenu";
 import { auth } from "@/auth";
+import { UserMenu } from "./UserMenu";
 
 const ResponsiveAppBar = async () => {
-  const pages = ["Products", "Pricing", "Blog"];
+  const pages = ["Questions", "Tags", "Blog"];
   const session = await auth();
   return (
     <AppBar position="static">
