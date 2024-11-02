@@ -54,6 +54,8 @@ const page = async () => {
                       <DeleteIcon />
                     </IconButton>
                     <IconButton
+                      component={Link}
+                      href={`/questions/${question?.id}/edit`}
                       edge="end"
                       sx={{
                         color: "white",
@@ -82,7 +84,7 @@ const page = async () => {
           </ListItem>
         ))}
       </List>
-      {session?.user && <AddQuestion />}
+      <AddQuestion />
     </Box>
   );
 };

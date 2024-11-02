@@ -2,10 +2,10 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, TextField } from "@mui/material";
 import { useActionState } from "react";
-import { newQuestionAction } from "../actions/NewQuestionAction";
+import { AddQuestionAction } from "../actions/Question";
 
 const page = () => {
-  const [state, action, loading] = useActionState(newQuestionAction, null);
+  const [state, action, loading] = useActionState(AddQuestionAction, null);
   return (
     <Box
       component="form"

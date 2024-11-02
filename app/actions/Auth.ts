@@ -71,7 +71,6 @@ const signinAction = async (_prevState: any, formData: FormData) => {
       ...validatedData.data,
       redirect: false,
     });
-    console.log(res.error);
   } catch (e) {
     const formError = { formErrors: "Email and password doesn not match" };
     return { error: formError, data: rawData };

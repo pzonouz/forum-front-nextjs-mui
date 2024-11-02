@@ -15,9 +15,7 @@ import Link from "next/link";
 const page = () => {
   const [state, action, loading] = useActionState(signinAction, null);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
+  useEffect(() => {}, [state]);
   return (
     <Box
       component="form"
