@@ -2,10 +2,6 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  pages: {
-    signIn: "/signin",
-    newUser: "/signup",
-  },
   providers: [
     Credentials({
       authorize: async (credentials) => {
@@ -17,7 +13,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           body: JSON.stringify(credentials),
         });
         if (res.ok) {
-          return await res.json();
+          const user = await res.json();
+          return user;
         }
         return null;
       },

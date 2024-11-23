@@ -61,4 +61,20 @@ const EditQuestionAction = async (_prevState: any, formData: FormData) => {
     return { error: errorObj, data: validatedData.data };
   }
 };
-export { AddQuestionAction, EditQuestionAction };
+
+const DeleteQuestionAction = async (_prevState: any, formData: FormData) => {
+  const session = await auth();
+  const res = await fetch(
+    `${process.env.BACKEND_URL}/questions/${formData.get("id")}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access}`,
+      },
+    },
+  );
+  revalidatePath("/questions");
+  redirect("/questions");
+};
+export { AddQuestionAction, EditQuestionAction, DeleteQuestionAction };

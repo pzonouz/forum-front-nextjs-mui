@@ -1,14 +1,14 @@
-import { AnswerType } from "./AnswerTypes";
+import { QuestionType } from "./QuestionTypes";
 import { UserType } from "./UserType";
 
-export type QuestionType = {
+export type AnswerType = {
   id: string;
   title: string;
   description: string;
   content: string;
   createdAt: string;
   updatedAt: string;
-  solved: boolean;
   user: UserType;
-  answers: AnswerType[];
+  question: QuestionType;
+  solving: boolean;
 };

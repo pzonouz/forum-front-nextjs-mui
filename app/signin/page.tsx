@@ -1,6 +1,5 @@
 "use client";
 import { LoadingButton } from "@mui/lab";
-// import { Link as NextLink } from "next/link";
 import {
   Box,
   FormHelperText,
@@ -8,14 +7,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import { signinAction } from "../actions/Auth";
 import Link from "next/link";
 
 const page = () => {
   const [state, action, loading] = useActionState(signinAction, null);
 
-  useEffect(() => {}, [state]);
   return (
     <Box
       component="form"

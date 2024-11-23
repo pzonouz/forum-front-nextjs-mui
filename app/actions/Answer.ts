@@ -1,15 +1,15 @@
 "use server";
 import { auth } from "@/auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 
+const session = await auth();
 const answerSchema = z.object({
   description: z.string().min(10),
   questionId: z.string(),
 });
 const AddAnswerAction = async (_prevState: any, formData: FormData) => {
-  const session = await auth();
   const rawData = Object.fromEntries(formData);
   const validatedData = answerSchema.safeParse(rawData);
   if (validatedData.error) {
@@ -34,4 +34,22 @@ const AddAnswerAction = async (_prevState: any, formData: FormData) => {
   }
 };
 
-export { AddAnswerAction };
+const SolvedAnswerAction = async (_prevState: any, formData: FormData) => {
+  const resSolved = await fetch(
+    `${process.env.BACKEND_URL}/answers/solving/${formData.get("answerId")}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access}`,
+      },
+    },
+  );
+  if (resSolved.ok) {
+    revalidateTag("Answer");
+    revalidatePath(`/questions/${formData.get("questionId")}`);
+  }
+};
+
+export { AddAnswerAction, SolvedAnswerAction };

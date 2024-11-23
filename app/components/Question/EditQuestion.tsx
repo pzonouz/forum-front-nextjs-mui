@@ -21,7 +21,7 @@ const EditQuestion = ({ question }: { question: QuestionType }) => {
         gap: "1rem",
         padding: "2rem",
         backgroundColor: "background.paper",
-        width: "90%",
+        width: "100%",
       }}
     >
       <>

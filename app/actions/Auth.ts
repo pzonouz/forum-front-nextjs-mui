@@ -75,7 +75,7 @@ const signinAction = async (_prevState: any, formData: FormData) => {
     const formError = { formErrors: "Email and password doesn not match" };
     return { error: formError, data: rawData };
   }
-  redirect("/profile");
+  redirect("/questions");
 };
 
 export { signupAction, signinAction };
