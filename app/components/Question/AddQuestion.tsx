@@ -7,21 +7,26 @@ import { useActionState, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { AddQuestionAction } from "@/app/actions/Question";
 import { useSession } from "next-auth/react";
-import { Unauthorized } from "../Shared/Unauthoried";
+import { useRouter } from "next/navigation";
 
 const AddQuestion = () => {
-  const session = useSession();
   const [open, setOpen] = useState(false);
+  const session = useSession();
+  const router = useRouter();
   const [state, action, loading] = useActionState(AddQuestionAction, null);
   useEffect(() => {
     if (state?.success) {
       setOpen(false);
     }
-  }, [state?.success]);
+  }, [state]);
   return (
     <Box>
       <Fab
         onClick={() => {
+          if (!(session?.status === "authenticated")) {
+            router.push("/signin");
+            return;
+          }
           setOpen(true);
         }}
         color="primary"
@@ -46,43 +51,37 @@ const AddQuestion = () => {
             width: "80%",
           }}
         >
-          {session?.data ? (
-            <>
-              <TextField
-                label="Title"
-                variant="standard"
-                name="title"
-                defaultValue={state?.data?.title}
-                helperText={state?.error?.fieldErrors?.title}
-                error={!!state?.error?.fieldErrors?.title}
-              />
-              <TextField
-                label="Description"
-                name="description"
-                multiline
-                minRows={5}
-                variant="filled"
-                defaultValue={state?.data?.description}
-                helperText={state?.error?.fieldErrors?.description}
-                error={!!state?.error?.fieldErrors?.description}
-              />
-              {state?.error?.formErrors.length! > 0 && (
-                <FormHelperText error>
-                  {state?.error?.formErrors}
-                </FormHelperText>
-              )}
-              <LoadingButton
-                loading={loading}
-                type="submit"
-                variant="contained"
-                color="primary"
-              >
-                Add
-              </LoadingButton>
-            </>
-          ) : (
-            <Unauthorized />
-          )}
+          <>
+            <TextField
+              label="عنوان"
+              variant="standard"
+              name="title"
+              defaultValue={state?.data?.title}
+              helperText={state?.error?.fieldErrors?.title}
+              error={!!state?.error?.fieldErrors?.title}
+            />
+            <TextField
+              label="توضیحات"
+              name="description"
+              multiline
+              minRows={5}
+              variant="filled"
+              defaultValue={state?.data?.description}
+              helperText={state?.error?.fieldErrors?.description}
+              error={!!state?.error?.fieldErrors?.description}
+            />
+            {state?.error?.formErrors.length! > 0 && (
+              <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
+            )}
+            <LoadingButton
+              loading={loading}
+              type="submit"
+              variant="contained"
+              color="primary"
+            >
+              افزودن
+            </LoadingButton>
+          </>
         </Box>
       </ModalComponenet>
     </Box>

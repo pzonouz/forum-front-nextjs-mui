@@ -1,12 +1,13 @@
 "use client";
+import { EditAnswerAction } from "@/app/actions/Answer";
 import { EditQuestionAction } from "@/app/actions/Question";
-import { QuestionType } from "@/app/types/QuestionTypes";
+import { AnswerType } from "@/app/types/AnswerTypes";
 import { LoadingButton } from "@mui/lab";
 import { Box, FormHelperText, TextField } from "@mui/material";
 import { useActionState } from "react";
 
-const EditQuestion = ({ question }: { question: QuestionType }) => {
-  const [state, action, loading] = useActionState(EditQuestionAction, null);
+const EditAnswer = ({ answer }: { answer: AnswerType }) => {
+  const [state, action, loading] = useActionState(EditAnswerAction, null);
   return (
     <Box
       component="form"
@@ -25,14 +26,11 @@ const EditQuestion = ({ question }: { question: QuestionType }) => {
       }}
     >
       <>
-        <input type="hidden" name="id" defaultValue={question?.id} />
-        <TextField
-          label="عنوان"
-          variant="standard"
-          name="title"
-          defaultValue={state?.data?.title || question?.title}
-          helperText={state?.error?.fieldErrors?.title}
-          error={!!state?.error?.fieldErrors?.title}
+        <input type="hidden" name="id" defaultValue={answer?.id} />
+        <input
+          type="hidden"
+          name="questionId"
+          defaultValue={answer?.question?.id}
         />
         <TextField
           label="توضیحات"
@@ -40,7 +38,7 @@ const EditQuestion = ({ question }: { question: QuestionType }) => {
           multiline
           minRows={5}
           variant="filled"
-          defaultValue={state?.data?.description || question?.description}
+          defaultValue={state?.data?.description || answer?.description}
           helperText={state?.error?.fieldErrors?.description}
           error={!!state?.error?.fieldErrors?.description}
         />
@@ -59,4 +57,4 @@ const EditQuestion = ({ question }: { question: QuestionType }) => {
     </Box>
   );
 };
-export { EditQuestion };
+export { EditAnswer };

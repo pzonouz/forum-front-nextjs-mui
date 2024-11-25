@@ -5,25 +5,25 @@ import * as z from "zod";
 
 let signUpSchema = z
   .object({
-    email: z.string().email(),
+    email: z.string().email({ message: "فرمت ایمیل درست نیست" }),
     password: z
       .string()
       .regex(
         /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/,
         {
           message:
-            "Should have 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character and be at least 8 characters long",
+            "حداقل ۸ حرف،حداقل یک حرف کوچک،حداقل یک حرف بزرگ،حداقل یک عدد،حداقل یک نماد و حداقل یک کاراکتر خاص",
         },
       ),
-    password_confirm: z.string().min(1),
-    firstName: z.string().min(1),
-    lastName: z.string().min(1),
+    password_confirm: z.string().min(1, { message: "این فیلد باید پر شود" }),
+    firstname: z.string().min(1, { message: "این فیلد باید پر شود" }),
+    lastname: z.string().min(1, { message: "این فیلد باید پر شود" }),
   })
   .superRefine((value, ctx) => {
     if (value.password !== value.password_confirm) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Passwords do not match",
+        message: "پسوردها مطابقت ندارد",
         path: ["password_confirm"],
       });
     }
@@ -67,7 +67,7 @@ const signinAction = async (_prevState: any, formData: FormData) => {
     return { error: validatedData.error.flatten(), data: rawData };
   }
   try {
-    const res = await signIn("credentials", {
+    await signIn("credentials", {
       ...validatedData.data,
       redirect: false,
     });
@@ -78,4 +78,32 @@ const signinAction = async (_prevState: any, formData: FormData) => {
   redirect("/questions");
 };
 
-export { signupAction, signinAction };
+const forgetPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+const forgetPasswordAction = async (_prevState: any, formData: FormData) => {
+  const rawData = Object.fromEntries(formData);
+  const validatedData = forgetPasswordSchema.safeParse(rawData);
+  if (validatedData.error) {
+    return { error: validatedData.error.flatten(), data: rawData };
+  }
+  try {
+    const res = await fetch(`${process.env.BACKEND_URL}/auth/forget_password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validatedData.data),
+    });
+    if (res.ok) {
+      return { success: true };
+    } else {
+      return { error: await res.json() };
+    }
+  } catch {
+    return { error: "ایراد در سرور" };
+  }
+};
+
+export { signupAction, signinAction, forgetPasswordAction };

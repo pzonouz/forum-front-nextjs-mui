@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
 import Link from "next/link";
 
-const MobileMenu = ({ pages }: { pages: string[] }) => {
+const MobileMenu = ({ pages }: { pages: { name: string; path: string }[] }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -37,8 +37,16 @@ const MobileMenu = ({ pages }: { pages: string[] }) => {
         sx={{ display: { xs: "block", md: "none" } }}
       >
         {pages.map((page) => (
-          <MenuItem key={page} component={Link} href={"/" + page.toLowerCase()}>
-            <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+          <MenuItem
+            key={page?.name}
+            component={Link}
+            href={page?.path}
+            sx={{ display: "flex", justifyContent: "end" }}
+            onClick={() => {
+              handleCloseNavMenu();
+            }}
+          >
+            <Typography>{page?.name}</Typography>
           </MenuItem>
         ))}
       </Menu>

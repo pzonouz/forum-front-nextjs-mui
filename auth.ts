@@ -1,5 +1,7 @@
+import { Email } from "@mui/icons-material";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -19,15 +21,36 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return null;
       },
     }),
+    Google,
   ],
   callbacks: {
+    signIn: async ({ user, account }) => {
+      if (account?.provider === "google") {
+        const resUser = await fetch(
+          `${process.env.BACKEND_URL}/auth/social_signin`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email: user?.email,
+              firstname: user?.name?.split(" ")[0] || "",
+              lastname: user?.name?.split(" ")[1] || "",
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        const backendUser = await resUser.json();
+        user["access"] = backendUser.access;
+        return user;
+      }
+      return true;
+    },
     jwt: async ({ token, user }) => {
       if (user) {
-        token.id = user.id;
-        token.access = user?.access;
+        token.name = user?.name;
+        token.sub = user?.id;
         token.email = user?.email;
-        token.firstName = user?.firstName;
-        token.lastName = user?.lastName;
         token.image = user?.image;
         token.access = user?.access;
       }
@@ -35,11 +58,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session: async ({ session, token }) => {
       if (token) {
-        session.user.id = token?.id;
-        session.user.email = token?.email;
-        session.user.firstName = token?.firstName;
-        session.user.lastName = token?.lastName;
-        session.user.image = token?.image;
+        session.user.id = token.sub!;
+        session.user.name = token.name!;
+        session.user.email = token.email!;
+        session.user.image = token.image!;
         session.access = token?.access;
       }
       return session;

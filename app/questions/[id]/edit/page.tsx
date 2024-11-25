@@ -3,7 +3,7 @@ import { Unauthorized } from "@/app/components/Shared/Unauthoried";
 import { QuestionType } from "@/app/types/QuestionTypes";
 import { auth } from "@/auth";
 
-const page = async ({ params }: { params: { id: string } }) => {
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
   const session = await auth();
   const resQuestion = await fetch(

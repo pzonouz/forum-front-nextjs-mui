@@ -1,9 +1,12 @@
 "use server";
 import { AnswerType } from "@/app/types/AnswerTypes";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { auth } from "@/auth";
 import { SolveQuestion } from "./SolvedAnswer";
+import Link from "next/link";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Answer = async ({ questionId }: { questionId: string }) => {
   const session = await auth();
@@ -15,13 +18,14 @@ const Answer = async ({ questionId }: { questionId: string }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       {answers?.map((answer: AnswerType) => {
-        const createdAt = new Date(answer?.createdAt).toLocaleString();
+        const created_at = new Date(answer?.created_at).toLocaleString("fa-IR");
         return (
           <Paper
             key={answer?.id}
             elevation={3}
             sx={[
               {
+                position: "relative",
                 display: "flex",
                 flexDirection: "row",
                 gap: "1rem",
@@ -30,15 +34,38 @@ const Answer = async ({ questionId }: { questionId: string }) => {
                 marginRight: 0,
                 marginLeft: "auto",
               },
-              !answer?.solving && {
-                paddingLeft: 0,
-              },
               answer?.solving && {
                 backgroundColor: "success.main",
                 color: "white",
               },
             ]}
           >
+            {session?.user?.email === answer?.user?.email && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  position: "absolute",
+                  right: "-0.5rem",
+                  top: "-1rem",
+                }}
+              >
+                <IconButton
+                  sx={{ color: "primary.main" }}
+                  component={Link}
+                  href={`/answers/${answer?.id}/edit`}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  sx={{ color: "error.main" }}
+                  component={Link}
+                  href={`/answers/${answer?.id}/delete`}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            )}
             <SolveQuestion answer={answer} session={session!} />
             <Box sx={{ flex: 1 }}>
               <Typography>{answer?.description}</Typography>
@@ -70,7 +97,7 @@ const Answer = async ({ questionId }: { questionId: string }) => {
                   ]}
                   component="span"
                 >
-                  {createdAt}
+                  {created_at}
                 </Typography>
               </Box>
             </Box>

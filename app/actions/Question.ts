@@ -1,12 +1,12 @@
 "use server";
 import { auth } from "@/auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 
 const questionSchema = z.object({
-  title: z.string().min(5),
-  description: z.string().min(10),
+  title: z.string().min(5, { message: "حداقل ۵ حرف باید داشته باشد" }),
+  description: z.string().min(10, { message: "حداقل ۱۰ حرف باید داشته باشد" }),
 });
 const AddQuestionAction = async (_prevState: any, formData: FormData) => {
   const session = await auth();
@@ -25,7 +25,7 @@ const AddQuestionAction = async (_prevState: any, formData: FormData) => {
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidatePath("/questions");
+    revalidateTag("Question");
     return { success: true };
   } else {
     const error = await res.json();
@@ -53,7 +53,7 @@ const EditQuestionAction = async (_prevState: any, formData: FormData) => {
     },
   );
   if (res.ok) {
-    revalidatePath("/questions");
+    revalidateTag("Question");
     redirect("/questions");
   } else {
     const error = await res.json();
@@ -74,7 +74,7 @@ const DeleteQuestionAction = async (_prevState: any, formData: FormData) => {
       },
     },
   );
-  revalidatePath("/questions");
+  revalidateTag("Question");
   redirect("/questions");
 };
 export { AddQuestionAction, EditQuestionAction, DeleteQuestionAction };

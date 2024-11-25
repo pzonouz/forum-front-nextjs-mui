@@ -3,21 +3,22 @@
 import { AddAnswer } from "@/app/components/Answer/AddAnswer";
 import { Answer } from "@/app/components/Answer/Answer";
 import { QuestionType } from "@/app/types/QuestionTypes";
-import { Box, Icon, IconButton, Paper, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { grey } from "@mui/material/colors";
-import { Edit } from "@mui/icons-material";
 import Link from "next/link";
+import { auth } from "@/auth";
 
-const page = async ({ params }: { params: any }) => {
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const session = await auth();
   const parameters = await params;
   const resQuestion = await fetch(
     `${process.env.BACKEND_URL}/questions/${parameters.id}`,
   );
   const question: QuestionType = await resQuestion.json();
-  const createdAt = new Date(question.createdAt).toLocaleString();
+  const created_at = new Date(question.created_at).toLocaleString("fa-IR");
   return (
     <Box
       sx={{
@@ -28,30 +29,32 @@ const page = async ({ params }: { params: any }) => {
       }}
     >
       <Paper elevation={3} sx={{ width: "100%", position: "relative" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            position: "absolute",
-            right: "-0.5rem",
-            top: "-1rem",
-          }}
-        >
-          <IconButton
-            sx={{ color: "primary.main" }}
-            component={Link}
-            href={`/questions/${parameters?.id}/edit`}
+        {session?.user?.email == question?.user?.email && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              position: "absolute",
+              right: "-0.5rem",
+              top: "-1rem",
+            }}
           >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            sx={{ color: "error.main" }}
-            component={Link}
-            href={`/questions/${parameters?.id}/delete`}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
+            <IconButton
+              sx={{ color: "primary.main" }}
+              component={Link}
+              href={`/questions/${parameters?.id}/edit`}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: "error.main" }}
+              component={Link}
+              href={`/questions/${parameters?.id}/delete`}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        )}
         <Box
           sx={[
             {
@@ -98,7 +101,8 @@ const page = async ({ params }: { params: any }) => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                width: "100%",
+                width: "90%",
+                marginTop: "1rem",
               }}
             >
               <Typography
@@ -111,14 +115,14 @@ const page = async ({ params }: { params: any }) => {
                 sx={{ fontSize: "0.7rem", color: grey[700] }}
                 component="span"
               >
-                {createdAt}
+                {created_at}
               </Typography>
             </Box>
           </Box>
         </Box>
       </Paper>
       <Answer questionId={parameters.id} />
-      <AddAnswer question={question} />
+      {<AddAnswer session={session!} question={question} />}
     </Box>
   );
 };

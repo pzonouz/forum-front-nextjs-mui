@@ -1,5 +1,5 @@
 "use client";
-import { DeleteQuestionAction } from "@/app/actions/Question";
+import { DeleteAnswerAction } from "@/app/actions/Answer";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import { useActionState } from "react";
 const page = () => {
   const params = useParams();
   const router = useRouter();
-  const [_state, action, loading] = useActionState(DeleteQuestionAction, null);
+  const [_state, action, loading] = useActionState(DeleteAnswerAction, null);
   return (
     <Box
       sx={{
@@ -28,7 +28,7 @@ const page = () => {
           width: "100%",
         }}
       >
-        آيا مطمئن هستید که میخواهید سوال را حذف کنید؟
+        آیا از حذف پاسخ اطمینان دارید؟
       </Typography>
       <Box
         sx={{
@@ -40,11 +40,13 @@ const page = () => {
           gap: "6rem",
         }}
       >
-        <Box component="form" action={() => router.back()}>
-          <Button type="submit" variant="contained" color="primary">
-            نه
-          </Button>
-        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.back()}
+        >
+          نه
+        </Button>
         <Box component="form" action={action}>
           <input type="hidden" name="id" value={params?.id} />
           <LoadingButton

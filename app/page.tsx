@@ -1,6 +1,16 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { AddQuestion } from "./components/Question/AddQuestion";
+import { TopQuestions } from "./components/Question/TopQuestions";
+import { QuestionSearchParams } from "./types/QuestionTypes";
 
-export default function Home() {
-  return <div></div>;
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<QuestionSearchParams>;
+}) {
+  return (
+    <>
+      <AddQuestion />
+      <TopQuestions searchParams={await searchParams} />
+    </>
+  );
 }
