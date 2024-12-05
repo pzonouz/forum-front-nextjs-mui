@@ -8,15 +8,21 @@ import { LoadingButton } from "@mui/lab";
 import { AddQuestionAction } from "@/app/actions/Question";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { FilesComponent } from "../File/FilesComponent";
 
 const AddQuestion = () => {
   const [open, setOpen] = useState(false);
+  const [filenames, setFilenames] = useState([]);
   const session = useSession();
   const router = useRouter();
-  const [state, action, loading] = useActionState(AddQuestionAction, null);
+  const [state, action, loading] = useActionState(
+    AddQuestionAction.bind(null, filenames),
+    null,
+  );
   useEffect(() => {
     if (state?.success) {
       setOpen(false);
+      setFilenames([]);
     }
   }, [state]);
   return (
@@ -51,37 +57,36 @@ const AddQuestion = () => {
             width: "80%",
           }}
         >
-          <>
-            <TextField
-              label="عنوان"
-              variant="standard"
-              name="title"
-              defaultValue={state?.data?.title}
-              helperText={state?.error?.fieldErrors?.title}
-              error={!!state?.error?.fieldErrors?.title}
-            />
-            <TextField
-              label="توضیحات"
-              name="description"
-              multiline
-              minRows={5}
-              variant="filled"
-              defaultValue={state?.data?.description}
-              helperText={state?.error?.fieldErrors?.description}
-              error={!!state?.error?.fieldErrors?.description}
-            />
-            {state?.error?.formErrors.length! > 0 && (
-              <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
-            )}
-            <LoadingButton
-              loading={loading}
-              type="submit"
-              variant="contained"
-              color="primary"
-            >
-              افزودن
-            </LoadingButton>
-          </>
+          <TextField
+            label="عنوان"
+            variant="standard"
+            name="title"
+            defaultValue={state?.data?.title}
+            helperText={state?.error?.fieldErrors?.title}
+            error={!!state?.error?.fieldErrors?.title}
+          />
+          <TextField
+            label="توضیحات"
+            name="description"
+            multiline
+            minRows={5}
+            variant="filled"
+            defaultValue={state?.data?.description}
+            helperText={state?.error?.fieldErrors?.description}
+            error={!!state?.error?.fieldErrors?.description}
+          />
+          {state?.error?.formErrors.length! > 0 && (
+            <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
+          )}
+          <FilesComponent filenames={filenames!} setFilenames={setFilenames} />
+          <LoadingButton
+            loading={loading}
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            افزودن
+          </LoadingButton>
         </Box>
       </ModalComponenet>
     </Box>

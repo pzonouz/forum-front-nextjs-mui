@@ -16,7 +16,15 @@ const Answer = async ({ questionId }: { questionId: string }) => {
   );
   const answers = await res.json();
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <Box
+      sx={{
+        width: "95%",
+        display: "flex",
+        marginLeft: "5%",
+        flexDirection: "column",
+        gap: "1rem",
+      }}
+    >
       {answers?.map((answer: AnswerType) => {
         const created_at = new Date(answer?.created_at).toLocaleString("fa-IR");
         return (
@@ -25,12 +33,11 @@ const Answer = async ({ questionId }: { questionId: string }) => {
             elevation={3}
             sx={[
               {
-                position: "relative",
                 display: "flex",
+                padding: "1rem",
+                width: "100%",
                 flexDirection: "row",
                 gap: "1rem",
-                width: "90%",
-                padding: "1rem",
                 marginRight: 0,
                 marginLeft: "auto",
               },
@@ -44,21 +51,26 @@ const Answer = async ({ questionId }: { questionId: string }) => {
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "row",
-                  position: "absolute",
-                  right: "-0.5rem",
-                  top: "-1rem",
+                  flexDirection: "column",
                 }}
               >
+                <SolveQuestion answer={answer} session={session!} />
                 <IconButton
-                  sx={{ color: "primary.main" }}
+                  sx={[
+                    answer?.solving && { backgroundColor: "white" },
+                    { color: "primary.main" },
+                  ]}
                   component={Link}
                   href={`/answers/${answer?.id}/edit`}
                 >
                   <EditIcon />
                 </IconButton>
                 <IconButton
-                  sx={{ color: "error.main" }}
+                  sx={[
+                    answer?.solving && { backgroundColor: "white" },
+                    { backgroundColor: "white" },
+                    { color: "error.main" },
+                  ]}
                   component={Link}
                   href={`/answers/${answer?.id}/delete`}
                 >
@@ -66,8 +78,14 @@ const Answer = async ({ questionId }: { questionId: string }) => {
                 </IconButton>
               </Box>
             )}
-            <SolveQuestion answer={answer} session={session!} />
-            <Box sx={{ flex: 1 }}>
+            <Box
+              sx={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+            >
               <Typography>{answer?.description}</Typography>
               <Box
                 sx={{

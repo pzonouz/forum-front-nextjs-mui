@@ -8,7 +8,10 @@ import { useActionState } from "react";
 const page = () => {
   const params = useParams();
   const router = useRouter();
-  const [_state, action, loading] = useActionState(DeleteAnswerAction, null);
+  const [_state, action, loading] = useActionState(
+    DeleteAnswerAction.bind(null, params?.id),
+    null,
+  );
   return (
     <Box
       sx={{
@@ -48,7 +51,6 @@ const page = () => {
           نه
         </Button>
         <Box component="form" action={action}>
-          <input type="hidden" name="id" value={params?.id} />
           <LoadingButton
             loading={loading}
             type="submit"

@@ -3,29 +3,33 @@ import { EditQuestionAction } from "@/app/actions/Question";
 import { QuestionType } from "@/app/types/QuestionTypes";
 import { LoadingButton } from "@mui/lab";
 import { Box, FormHelperText, TextField } from "@mui/material";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { FilesComponent } from "../File/FilesComponent";
 
 const EditQuestion = ({ question }: { question: QuestionType }) => {
-  const [state, action, loading] = useActionState(EditQuestionAction, null);
+  const [filenames, setFilenames] = useState(question?.filenames);
+  const [state, action, loading] = useActionState(
+    EditQuestionAction.bind(null, question?.id, filenames),
+    null,
+  );
   return (
     <Box
       component="form"
       action={action}
       sx={{
         position: "fixed",
-        top: "50%",
+        top: "20%",
         left: "50%",
-        transform: "translate(-50%, -50%)",
+        transform: "translate(-50%)",
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
         padding: "2rem",
         backgroundColor: "background.paper",
-        width: "90%",
+        width: "100%",
       }}
     >
       <>
-        <input type="hidden" name="id" defaultValue={question?.id} />
         <TextField
           label="عنوان"
           variant="standard"
@@ -47,6 +51,11 @@ const EditQuestion = ({ question }: { question: QuestionType }) => {
         {state?.error?.formErrors.length! > 0 && (
           <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
         )}
+        <FilesComponent
+          question={question}
+          filenames={filenames}
+          setFilenames={setFilenames}
+        />
         <LoadingButton
           loading={loading}
           type="submit"

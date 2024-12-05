@@ -7,7 +7,10 @@ import { Box, FormHelperText, TextField } from "@mui/material";
 import { useActionState } from "react";
 
 const EditAnswer = ({ answer }: { answer: AnswerType }) => {
-  const [state, action, loading] = useActionState(EditAnswerAction, null);
+  const [state, action, loading] = useActionState(
+    EditAnswerAction.bind(null, answer?.id),
+    null,
+  );
   return (
     <Box
       component="form"
@@ -26,12 +29,6 @@ const EditAnswer = ({ answer }: { answer: AnswerType }) => {
       }}
     >
       <>
-        <input type="hidden" name="id" defaultValue={answer?.id} />
-        <input
-          type="hidden"
-          name="questionId"
-          defaultValue={answer?.question?.id}
-        />
         <TextField
           label="توضیحات"
           name="description"

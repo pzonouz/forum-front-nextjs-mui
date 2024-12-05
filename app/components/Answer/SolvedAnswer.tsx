@@ -15,17 +15,22 @@ const SolveQuestion = ({
   answer: AnswerType;
   session: Session;
 }) => {
-  const [_state, action, loading] = useActionState(SolvedAnswerAction, null);
+  const [_state, action, loading] = useActionState(
+    SolvedAnswerAction.bind(null, answer?.id, answer?.question?.id),
+    null,
+  );
   return (
     <>
       {answer?.question?.user?.email === session?.user?.email && (
         <Box component="form" action={action}>
-          <input hidden name="answerId" defaultValue={answer?.id} />
-          <IconButton type="submit">
+          <IconButton
+            sx={[answer.solving && { backgroundColor: "white" }]}
+            type="submit"
+          >
             {loading ? (
               <CircularProgress color="primary" size={24} />
             ) : !answer?.solving ? (
-              <CheckIcon sx={{ color: "success.main" }} />
+              <CheckIcon sx={[{ color: "success.main" }]} />
             ) : (
               <CloseIcon sx={{ color: "error.main" }} />
             )}

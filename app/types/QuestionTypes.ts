@@ -11,6 +11,7 @@ export type QuestionType = {
   solved: boolean;
   user: UserType;
   answers: AnswerType[];
+  filenames: string[];
 };
 
 export type QuestionSearchParams = {

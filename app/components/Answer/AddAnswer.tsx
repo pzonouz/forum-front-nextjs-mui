@@ -13,14 +13,16 @@ const AddAnswer = ({
   question: QuestionType;
   session: Session;
 }) => {
-  const [state, action, loading] = useActionState(AddAnswerAction, null);
+  const [state, action, loading] = useActionState(
+    AddAnswerAction.bind(null, question?.id),
+    null,
+  );
   return (
     <Box
       component="form"
       action={action}
       sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
     >
-      <input hidden name="questionId" defaultValue={question?.id} />
       <TextField
         sx={{
           width: "100%",

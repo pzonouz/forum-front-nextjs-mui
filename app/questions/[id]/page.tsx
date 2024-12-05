@@ -10,8 +10,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { grey } from "@mui/material/colors";
 import Link from "next/link";
 import { auth } from "@/auth";
+import Image from "next/image";
 
-const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+const page = async ({ params }: { params: any }) => {
   const session = await auth();
   const parameters = await params;
   const resQuestion = await fetch(
@@ -28,33 +29,13 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
         gap: "1rem",
       }}
     >
-      <Paper elevation={3} sx={{ width: "100%", position: "relative" }}>
-        {session?.user?.email == question?.user?.email && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              position: "absolute",
-              right: "-0.5rem",
-              top: "-1rem",
-            }}
-          >
-            <IconButton
-              sx={{ color: "primary.main" }}
-              component={Link}
-              href={`/questions/${parameters?.id}/edit`}
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              sx={{ color: "error.main" }}
-              component={Link}
-              href={`/questions/${parameters?.id}/delete`}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        )}
+      <Paper elevation={3} sx={{ width: "100%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        ></Box>
         <Box
           sx={[
             {
@@ -63,7 +44,6 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
               gap: "1rem",
               alignItems: "center",
               padding: "1rem",
-              width: "100%",
             },
           ]}
         >
@@ -71,6 +51,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
             sx={{
               width: "1rem",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -89,6 +70,24 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
                     },
               ]}
             />
+            {session?.user?.email === question?.user?.email && (
+              <IconButton
+                sx={{ color: "primary.main" }}
+                component={Link}
+                href={`/questions/${parameters?.id}/edit`}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
+            {session?.user?.email === question?.user?.email && (
+              <IconButton
+                sx={{ color: "error.main" }}
+                component={Link}
+                href={`/questions/${parameters?.id}/delete`}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography sx={{ marginBottom: "1rem" }}>
@@ -119,6 +118,21 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
               </Typography>
             </Box>
           </Box>
+        </Box>
+        <Box id="files" sx={{ padding: "1rem" }}>
+          {question?.filenames?.map((filename, index) => (
+            <Box
+              key={filename}
+              component="a"
+              href={`http://localhost/showfile/${filename}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Typography sx={{ fontSize: "0.8rem" }}>
+                فایل-{index + 1}
+              </Typography>
+            </Box>
+          ))}
         </Box>
       </Paper>
       <Answer questionId={parameters.id} />

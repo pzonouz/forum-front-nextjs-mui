@@ -11,12 +11,17 @@ const answerSchema = z.object({
   description: z.string().min(10),
   questionId: z.string().nullish(),
 });
-const AddAnswerAction = async (_prevState: any, formData: FormData) => {
+const AddAnswerAction = async (
+  id: any,
+  _prevState: any,
+  formData: FormData,
+) => {
   const rawData = Object.fromEntries(formData);
   const validatedData = answerSchema.safeParse(rawData);
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
+  validatedData.data.questionId = id;
   const res = await fetch(`${process.env.BACKEND_URL}/answers/`, {
     method: "POST",
     credentials: "include",
@@ -27,24 +32,26 @@ const AddAnswerAction = async (_prevState: any, formData: FormData) => {
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidatePath(`/questions/${rawData?.id}`);
-    redirect(`/questions/${rawData?.questionId}`);
+    revalidatePath(`/questions/${id}`);
+    redirect(`/questions/${id}`);
   } else {
     const error = await res.json();
     const errorObj = { formErrors: JSON.stringify(error.message) };
     return { error: errorObj, data: validatedData.data };
   }
 };
-const EditAnswerAction = async (_prevState: any, formData: FormData) => {
+const EditAnswerAction = async (
+  id: any,
+  _prevState: any,
+  formData: FormData,
+) => {
   const session = await auth();
   const rawData = Object.fromEntries(formData);
   const validatedData = answerSchema.safeParse(rawData);
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
-  validatedData.data.id = undefined;
-  validatedData.data.questionId = undefined;
-  const res = await fetch(`${process.env.BACKEND_URL}/answers/${rawData?.id}`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/answers/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: {
@@ -62,9 +69,14 @@ const EditAnswerAction = async (_prevState: any, formData: FormData) => {
     return { error: errorObj, data: validatedData.data };
   }
 };
-const SolvedAnswerAction = async (_prevState: any, formData: FormData) => {
+const SolvedAnswerAction = async (
+  id: any,
+  quesionId: any,
+  _prevState: any,
+  _formData: FormData,
+) => {
   const resSolved = await fetch(
-    `${process.env.BACKEND_URL}/answers/solving/${formData.get("answerId")}`,
+    `${process.env.BACKEND_URL}/answers/solving/${id}`,
     {
       method: "PATCH",
       credentials: "include",
@@ -76,17 +88,19 @@ const SolvedAnswerAction = async (_prevState: any, formData: FormData) => {
   );
   if (resSolved.ok) {
     revalidateTag("Answer");
-    revalidatePath(`/questions/${formData.get("questionId")}`);
+    revalidatePath(`/questions/${quesionId}`);
   }
 };
 
-const DeleteAnswerAction = async (_prevState: any, formData: FormData) => {
+const DeleteAnswerAction = async (
+  id: any,
+  _prevState: any,
+  _formData: FormData,
+) => {
   const session = await auth();
-  const resAnswer = await fetch(
-    `${process.env.BACKEND_URL}/answers/${formData.get("id")}`,
-  );
+  const resAnswer = await fetch(`${process.env.BACKEND_URL}/answers/${id}`);
   const answer: AnswerType = await resAnswer.json();
-  await fetch(`${process.env.BACKEND_URL}/answers/${formData.get("id")}`, {
+  await fetch(`${process.env.BACKEND_URL}/answers/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
