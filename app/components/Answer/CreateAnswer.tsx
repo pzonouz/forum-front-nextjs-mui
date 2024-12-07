@@ -1,20 +1,22 @@
 "use client";
-import { AddAnswerAction } from "@/app/actions/Answer";
+import { CreateAnswerAction } from "@/app/actions/Answer";
 import { QuestionType } from "@/app/types/QuestionTypes";
 import { LoadingButton } from "@mui/lab";
 import { Box, FormHelperText, TextField } from "@mui/material";
 import { Session } from "next-auth";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { FilesComponent } from "../File/FilesComponent";
 
-const AddAnswer = ({
+const CreateAnswer = ({
   question,
   session,
 }: {
   question: QuestionType;
   session: Session;
 }) => {
+  const [filenames, setFilename] = useState([]);
   const [state, action, loading] = useActionState(
-    AddAnswerAction.bind(null, question?.id),
+    CreateAnswerAction.bind(null, question?.id, filenames),
     null,
   );
   return (
@@ -39,6 +41,7 @@ const AddAnswer = ({
       {state?.error?.formErrors.length! > 0 && (
         <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
       )}
+      <FilesComponent filenames={filenames} setFilenames={setFilename} />
       <LoadingButton
         type="submit"
         loading={loading}
@@ -51,4 +54,4 @@ const AddAnswer = ({
     </Box>
   );
 };
-export { AddAnswer };
+export { CreateAnswer };

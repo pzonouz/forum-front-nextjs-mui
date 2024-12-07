@@ -10,9 +10,11 @@ const answerSchema = z.object({
   id: z.string().nullish(),
   description: z.string().min(10),
   questionId: z.string().nullish(),
+  filenames: z.array(z.string()).nullish(),
 });
-const AddAnswerAction = async (
+const CreateAnswerAction = async (
   id: any,
+  filenames: string[],
   _prevState: any,
   formData: FormData,
 ) => {
@@ -22,6 +24,7 @@ const AddAnswerAction = async (
     return { error: validatedData.error.flatten(), data: rawData };
   }
   validatedData.data.questionId = id;
+  validatedData.data.filenames = filenames;
   const res = await fetch(`${process.env.BACKEND_URL}/answers/`, {
     method: "POST",
     credentials: "include",
@@ -40,8 +43,10 @@ const AddAnswerAction = async (
     return { error: errorObj, data: validatedData.data };
   }
 };
-const EditAnswerAction = async (
+const UpdateAnswerAction = async (
   id: any,
+  questionId: any,
+  filenames: string[],
   _prevState: any,
   formData: FormData,
 ) => {
@@ -51,6 +56,7 @@ const EditAnswerAction = async (
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
+  validatedData.data.filenames = filenames;
   const res = await fetch(`${process.env.BACKEND_URL}/answers/${id}`, {
     method: "PATCH",
     credentials: "include",
@@ -61,8 +67,8 @@ const EditAnswerAction = async (
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidatePath(`/questions/${rawData?.questionId}`);
-    redirect(`/questions/${rawData?.questionId}`);
+    revalidatePath(`/questions/${questionId}`);
+    redirect(`/questions/${questionId}`);
   } else {
     const error = await res.json();
     const errorObj = { formErrors: JSON.stringify(error.message) };
@@ -111,8 +117,8 @@ const DeleteAnswerAction = async (
   redirect(`/questions/${answer?.question?.id}`);
 };
 export {
-  AddAnswerAction,
+  CreateAnswerAction,
   SolvedAnswerAction,
-  EditAnswerAction,
+  UpdateAnswerAction,
   DeleteAnswerAction,
 };

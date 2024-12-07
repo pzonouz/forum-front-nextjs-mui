@@ -4,12 +4,14 @@ import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 
+// TODO:Use tiptap As description
+
 const questionSchema = z.object({
   title: z.string().min(5, { message: "حداقل ۵ حرف باید داشته باشد" }),
   description: z.string().min(10, { message: "حداقل ۱۰ حرف باید داشته باشد" }),
   filenames: z.array(z.string()).nullish(),
 });
-const AddQuestionAction = async (
+const CreateQuestionAction = async (
   filenames: string[],
   _prevState: any,
   formData: FormData,
@@ -39,7 +41,7 @@ const AddQuestionAction = async (
     return { error: errorObj, data: validatedData.data };
   }
 };
-const EditQuestionAction = async (
+const UpdateQuestionAction = async (
   id: string,
   filenames: string[],
   _prevState: any,
@@ -87,4 +89,4 @@ const DeleteQuestionAction = async (
   revalidateTag("Question");
   redirect("/questions");
 };
-export { AddQuestionAction, EditQuestionAction, DeleteQuestionAction };
+export { CreateQuestionAction, UpdateQuestionAction, DeleteQuestionAction };

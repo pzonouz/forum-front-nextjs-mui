@@ -1,4 +1,4 @@
-import { EditQuestion } from "@/app/components/Question/EditQuestion";
+import { UpdateQuestion } from "@/app/components/Question/UpdateQuestion";
 import { Unauthorized } from "@/app/components/Shared/Unauthoried";
 import { QuestionType } from "@/app/types/QuestionTypes";
 import { auth } from "@/auth";
@@ -19,7 +19,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   if (question?.user?.email != session?.user?.email) {
     return <Unauthorized />;
   }
-  return <EditQuestion question={question} />;
+  return <UpdateQuestion question={question} />;
 };
 
 export default page;

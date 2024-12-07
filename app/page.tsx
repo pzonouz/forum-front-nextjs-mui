@@ -1,4 +1,4 @@
-import { AddQuestion } from "./components/Question/AddQuestion";
+import { CreateQuestion } from "./components/Question/CreateQuestion";
 import { TopQuestions } from "./components/Question/TopQuestions";
 import { QuestionSearchParams } from "./types/QuestionTypes";
 
@@ -9,7 +9,7 @@ export default async function Home({
 }) {
   return (
     <>
-      <AddQuestion />
+      <CreateQuestion />
       <TopQuestions searchParams={await searchParams} />
     </>
   );

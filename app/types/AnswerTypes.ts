@@ -10,4 +10,5 @@ export type AnswerType = {
   user: UserType;
   question: QuestionType;
   solving: boolean;
+  filenames: string[];
 };

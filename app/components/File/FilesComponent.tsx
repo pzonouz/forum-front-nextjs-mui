@@ -12,13 +12,11 @@ import { useState } from "react";
 import Image from "next/image";
 import { LoadingButton } from "@mui/lab";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { QuestionType } from "@/app/types/QuestionTypes";
 
 const FilesComponent = ({
   filenames,
   setFilenames,
 }: {
-  question?: QuestionType;
   filenames: string[];
   setFilenames: Function;
 }) => {

@@ -1,22 +1,25 @@
 "use client";
 
-import { Box, Fab, FormHelperText, TextField } from "@mui/material";
+import { Box, Fab, FormHelperText, TextField, Typography } from "@mui/material";
 import { ModalComponenet } from "../Shared/ModalComponent";
 import AddIcon from "@mui/icons-material/Add";
 import { useActionState, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
-import { AddQuestionAction } from "@/app/actions/Question";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FilesComponent } from "../File/FilesComponent";
+import { CreateQuestionAction } from "@/app/actions/Question";
+import { translate } from "@/app/actions/translate";
+import Tiptap from "../Shared/Tiptap";
 
-const AddQuestion = () => {
+const CreateQuestion = () => {
   const [open, setOpen] = useState(false);
   const [filenames, setFilenames] = useState([]);
+  const [text, setText] = useState("");
   const session = useSession();
   const router = useRouter();
   const [state, action, loading] = useActionState(
-    AddQuestionAction.bind(null, filenames),
+    CreateQuestionAction.bind(null, filenames),
     null,
   );
   useEffect(() => {
@@ -54,7 +57,7 @@ const AddQuestion = () => {
             gap: "1rem",
             padding: "2rem",
             backgroundColor: "background.paper",
-            width: "80%",
+            width: "90%",
           }}
         >
           <TextField
@@ -65,18 +68,27 @@ const AddQuestion = () => {
             helperText={state?.error?.fieldErrors?.title}
             error={!!state?.error?.fieldErrors?.title}
           />
-          <TextField
-            label="توضیحات"
-            name="description"
-            multiline
-            minRows={5}
-            variant="filled"
-            defaultValue={state?.data?.description}
-            helperText={state?.error?.fieldErrors?.description}
-            error={!!state?.error?.fieldErrors?.description}
-          />
+          <Typography
+            component={"p"}
+            sx={{ color: "text.secondary", marginBottom: "-1rem" }}
+          >
+            توضیحات
+          </Typography>
+          <Tiptap text={text} setText={setText} />
+          {/* <TextField */}
+          {/*   label="توضیحات" */}
+          {/*   name="description" */}
+          {/*   multiline */}
+          {/*   minRows={5} */}
+          {/*   variant="filled" */}
+          {/*   defaultValue={state?.data?.description} */}
+          {/*   helperText={state?.error?.fieldErrors?.description} */}
+          {/*   error={!!state?.error?.fieldErrors?.description} */}
+          {/* /> */}
           {state?.error?.formErrors.length! > 0 && (
-            <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
+            <FormHelperText error>
+              {translate(state?.error?.formErrors)}
+            </FormHelperText>
           )}
           <FilesComponent filenames={filenames!} setFilenames={setFilenames} />
           <LoadingButton
@@ -92,4 +104,4 @@ const AddQuestion = () => {
     </Box>
   );
 };
-export { AddQuestion };
+export { CreateQuestion };

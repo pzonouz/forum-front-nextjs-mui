@@ -1,4 +1,4 @@
-import { EditAnswer } from "@/app/components/Answer/EditAnswer";
+import { UpdateAnswer } from "@/app/components/Answer/UpdateAnswer";
 import { Unauthorized } from "@/app/components/Shared/Unauthoried";
 import { AnswerType } from "@/app/types/AnswerTypes";
 import { auth } from "@/auth";
@@ -16,7 +16,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   if (answer?.user?.email != session?.user?.email) {
     return <Unauthorized />;
   }
-  return <EditAnswer answer={answer} />;
+  return <UpdateAnswer answer={answer} />;
 };
 
 export default page;

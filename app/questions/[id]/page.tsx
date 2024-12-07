@@ -1,6 +1,5 @@
 "use server";
 
-import { AddAnswer } from "@/app/components/Answer/AddAnswer";
 import { Answer } from "@/app/components/Answer/Answer";
 import { QuestionType } from "@/app/types/QuestionTypes";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
@@ -11,6 +10,7 @@ import { grey } from "@mui/material/colors";
 import Link from "next/link";
 import { auth } from "@/auth";
 import Image from "next/image";
+import { CreateAnswer } from "@/app/components/Answer/CreateAnswer";
 
 const page = async ({ params }: { params: any }) => {
   const session = await auth();
@@ -117,26 +117,29 @@ const page = async ({ params }: { params: any }) => {
                 {created_at}
               </Typography>
             </Box>
-          </Box>
-        </Box>
-        <Box id="files" sx={{ padding: "1rem" }}>
-          {question?.filenames?.map((filename, index) => (
             <Box
-              key={filename}
-              component="a"
-              href={`http://localhost/showfile/${filename}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              id="files"
+              sx={{ padding: "1rem", display: "flex", gap: "1rem" }}
             >
-              <Typography sx={{ fontSize: "0.8rem" }}>
-                فایل-{index + 1}
-              </Typography>
+              {question?.filenames?.map((filename, index) => (
+                <Box
+                  key={filename}
+                  component="a"
+                  href={`http://localhost/showfile/${filename}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Typography sx={{ fontSize: "0.8rem" }}>
+                    فایل-{index + 1}
+                  </Typography>
+                </Box>
+              ))}
             </Box>
-          ))}
+          </Box>
         </Box>
       </Paper>
       <Answer questionId={parameters.id} />
-      {<AddAnswer session={session!} question={question} />}
+      {<CreateAnswer session={session!} question={question} />}
     </Box>
   );
 };

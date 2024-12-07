@@ -1,14 +1,15 @@
 "use client";
-import { EditAnswerAction } from "@/app/actions/Answer";
-import { EditQuestionAction } from "@/app/actions/Question";
+import { UpdateAnswerAction } from "@/app/actions/Answer";
 import { AnswerType } from "@/app/types/AnswerTypes";
 import { LoadingButton } from "@mui/lab";
 import { Box, FormHelperText, TextField } from "@mui/material";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { FilesComponent } from "../File/FilesComponent";
 
-const EditAnswer = ({ answer }: { answer: AnswerType }) => {
+const UpdateAnswer = ({ answer }: { answer: AnswerType }) => {
+  const [filenames, setFilenames] = useState(answer?.filenames);
   const [state, action, loading] = useActionState(
-    EditAnswerAction.bind(null, answer?.id),
+    UpdateAnswerAction.bind(null, answer?.id, answer?.question?.id, filenames),
     null,
   );
   return (
@@ -42,6 +43,7 @@ const EditAnswer = ({ answer }: { answer: AnswerType }) => {
         {state?.error?.formErrors.length! > 0 && (
           <FormHelperText error>{state?.error?.formErrors}</FormHelperText>
         )}
+        <FilesComponent filenames={filenames} setFilenames={setFilenames} />
         <LoadingButton
           loading={loading}
           type="submit"
@@ -54,4 +56,4 @@ const EditAnswer = ({ answer }: { answer: AnswerType }) => {
     </Box>
   );
 };
-export { EditAnswer };
+export { UpdateAnswer };

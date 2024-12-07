@@ -118,6 +118,29 @@ const Answer = async ({ questionId }: { questionId: string }) => {
                   {created_at}
                 </Typography>
               </Box>
+              <Box
+                id="files"
+                sx={{
+                  padding: "1rem",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1rem",
+                }}
+              >
+                {answer?.filenames?.map((filename, index) => (
+                  <Box
+                    key={filename}
+                    component="a"
+                    href={`http://localhost/showfile/${filename}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Typography sx={{ fontSize: "0.8rem" }}>
+                      فایل-{index + 1}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
             </Box>
           </Paper>
         );
