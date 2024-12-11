@@ -37,7 +37,7 @@ const page = () => {
       </Typography>
       <Button
         onClick={() => {
-          signIn("google", { callbackUrl: "/questions" });
+          signIn("google", { callbackUrl: "http://localhost:3000/" });
         }}
         variant="contained"
         color="error"

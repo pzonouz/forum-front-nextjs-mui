@@ -9,16 +9,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { grey } from "@mui/material/colors";
 import Link from "next/link";
 import { auth } from "@/auth";
-import { CreateAnswer } from "@/app/components/Answer/CreateAnswer";
+import { AdminFileType } from "@/app/actions/File";
+import Image from "next/image";
 
 const page = async ({ params }: { params: any }) => {
   const session = await auth();
   const parameters = await params;
-  const resQuestion = await fetch(
-    `${process.env.BACKEND_URL}/questions/${parameters.id}`,
+  const resAdminFile = await fetch(
+    `${process.env.BACKEND_URL}/files/${parameters.id}`,
   );
-  const question: QuestionType = await resQuestion.json();
-  const created_at = new Date(question.created_at).toLocaleString("fa-IR");
+  const adminFile: AdminFileType = (await resAdminFile.json())?.[0];
+  const created_at = new Date(adminFile?.created_at).toLocaleString();
+  const filename = adminFile?.filename;
   return (
     <Box
       sx={{
@@ -55,34 +57,20 @@ const page = async ({ params }: { params: any }) => {
               justifyContent: "center",
             }}
           >
-            <CheckIcon
-              sx={[
-                {
-                  fontSize: "2rem",
-                },
-                question?.solved
-                  ? {
-                      color: "success.main",
-                    }
-                  : {
-                      color: grey[500],
-                    },
-              ]}
-            />
-            {session?.user?.email === question?.user?.email && (
+            {session?.user?.is_admin && (
               <IconButton
                 sx={{ color: "primary.main" }}
                 component={Link}
-                href={`/questions/${parameters?.id}/edit`}
+                href={`/admin/${parameters?.id}/edit`}
               >
                 <EditIcon />
               </IconButton>
             )}
-            {session?.user?.email === question?.user?.email && (
+            {session?.user?.is_admin && (
               <IconButton
                 sx={{ color: "error.main" }}
                 component={Link}
-                href={`/questions/${parameters?.id}/delete`}
+                href={`/admin/${parameters?.id}/delete`}
               >
                 <DeleteIcon />
               </IconButton>
@@ -90,11 +78,8 @@ const page = async ({ params }: { params: any }) => {
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography sx={{ marginBottom: "1rem" }}>
-              {question?.title}
+              {adminFile?.title}
             </Typography>
-            <div
-              dangerouslySetInnerHTML={{ __html: question?.description }}
-            ></div>
             <Box
               sx={{
                 display: "flex",
@@ -109,12 +94,6 @@ const page = async ({ params }: { params: any }) => {
                 sx={{ fontSize: "0.7rem", color: grey[700] }}
                 component="span"
               >
-                {question?.user?.email}
-              </Typography>
-              <Typography
-                sx={{ fontSize: "0.7rem", color: grey[700] }}
-                component="span"
-              >
                 {created_at}
               </Typography>
             </Box>
@@ -122,25 +101,26 @@ const page = async ({ params }: { params: any }) => {
               id="files"
               sx={{ padding: "1rem", display: "flex", gap: "1rem" }}
             >
-              {question?.filenames?.map((filename, index) => (
-                <Box
-                  key={filename}
-                  component="a"
-                  href={`http://localhost/showfile/${filename}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Typography sx={{ fontSize: "0.8rem" }}>
-                    فایل-{index + 1}
-                  </Typography>
-                </Box>
-              ))}
+              <Link href={`http://localhost/showfile/${filename}`}>
+                <Image
+                  src={
+                    filename.match(/\.(jpg|jpeg|png|gif|webp)$/i)
+                      ? `http://localhost/showfile/${filename}`
+                      : `/images/computer.png`
+                  }
+                  alt={filename}
+                  width={60}
+                  height={60}
+                  style={{
+                    borderRadius: "10%",
+                    border: "1px solid black",
+                  }}
+                />
+              </Link>
             </Box>
           </Box>
         </Box>
       </Paper>
-      <Answer questionId={parameters.id} />
-      {<CreateAnswer session={session!} question={question} />}
     </Box>
   );
 };

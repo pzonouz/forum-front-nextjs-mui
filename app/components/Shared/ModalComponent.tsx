@@ -1,4 +1,4 @@
-import { Box, Modal, Typography } from "@mui/material";
+import { Modal } from "@mui/material";
 import { JSXElementConstructor, ReactElement } from "react";
 
 const ModalComponenet = ({

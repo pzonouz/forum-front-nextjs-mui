@@ -1,4 +1,3 @@
-import { Email } from "@mui/icons-material";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -42,6 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
         const backendUser = await resUser.json();
         user["access"] = backendUser.access;
+        user["is_admin"] = backendUser.is_admin;
         return user;
       }
       return true;
@@ -53,6 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user?.email;
         token.image = user?.image;
         token.access = user?.access;
+        token.is_admin = user?.is_admin;
       }
       return token;
     },
@@ -61,7 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.sub!;
         session.user.name = token.name!;
         session.user.email = token.email!;
-        session.user.image = token.image!;
+        session.user.is_admin = token.is_admin!;
         session.access = token?.access;
       }
       return session;

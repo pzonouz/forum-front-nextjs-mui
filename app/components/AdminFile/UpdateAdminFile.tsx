@@ -1,18 +1,15 @@
 "use client";
-import { QuestionType } from "@/app/types/QuestionTypes";
 import { LoadingButton } from "@mui/lab";
 import { Box, FormHelperText, TextField } from "@mui/material";
 import { useActionState, useState } from "react";
-import { FilesComponent } from "../File/FilesComponent";
-import { UpdateQuestionAction } from "@/app/actions/Question";
-import { translate } from "@/app/actions/translate";
-import Tiptap from "../Shared/Tiptap";
+import { FileType } from "@/app/types/FileType";
+import { UpdateAdminFileAction } from "@/app/actions/File";
+import { FileComponent } from "./FileComponent";
 
-const UpdateQuestion = ({ question }: { question: QuestionType }) => {
-  const [filenames, setFilenames] = useState(question?.filenames);
-  const [text, setText] = useState(question?.description);
+const UpdateAdminFile = ({ file }: { file: FileType }) => {
+  const [filename, setFilename] = useState(file?.filename);
   const [state, action, loading] = useActionState(
-    UpdateQuestionAction.bind(null, question?.id, text, filenames),
+    UpdateAdminFileAction.bind(null, file?.id, filename),
     null,
   );
   return (
@@ -30,27 +27,25 @@ const UpdateQuestion = ({ question }: { question: QuestionType }) => {
         paddingX: "2rem",
         paddingBottom: "4rem",
         backgroundColor: "background.paper",
-        maxHeight: "90vh",
+        width: "90%",
         overflow: "hidden",
         overflowY: "auto",
       }}
     >
       <>
         <TextField
+          fullWidth
           label="عنوان"
           variant="standard"
           name="title"
-          defaultValue={state?.data?.title || question?.title}
+          defaultValue={state?.data?.title || file?.title}
           helperText={state?.error?.fieldErrors?.title}
           error={!!state?.error?.fieldErrors?.title}
         />
-        <Tiptap text={state?.data?.description || text} setText={setText} />
-        {state?.error?.formErrors.length! > 0 && (
-          <FormHelperText error>
-            {translate(state?.error?.formErrors)}
-          </FormHelperText>
-        )}
-        <FilesComponent filenames={filenames} setFilenames={setFilenames} />
+        <FileComponent filename={filename} setFilename={setFilename} />
+        <FormHelperText error sx={{ marginTop: "-1rem" }}>
+          {state?.error?.fieldErrors?.filename}
+        </FormHelperText>
         <LoadingButton
           loading={loading}
           type="submit"
@@ -63,4 +58,4 @@ const UpdateQuestion = ({ question }: { question: QuestionType }) => {
     </Box>
   );
 };
-export { UpdateQuestion };
+export { UpdateAdminFile };

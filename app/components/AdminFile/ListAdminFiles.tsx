@@ -1,6 +1,5 @@
 import {
   Box,
-  Chip,
   IconButton,
   List,
   ListItem,
@@ -14,31 +13,22 @@ import EditIcon from "@mui/icons-material/Edit";
 import { grey } from "@mui/material/colors";
 import { FileType } from "@/app/types/FileType";
 
-const ListQuestions = async ({
-  fetchUrl,
-  session,
-}: {
-  fetchUrl: string;
-  session: Session;
-}) => {
-  const resQuestions = await fetch(fetchUrl, {
+const ListAdminFiles = async ({ session }: { session: Session }) => {
+  const resFiles = await fetch(`${process.env.BACKEND_URL}/files`, {
     next: {
-      tags: ["Question"],
+      tags: ["File"],
     },
   });
-  const questions: FileType[] = await resQuestions.json();
+  const files: FileType[] = await resFiles.json();
   return (
     <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {questions?.map((question) => {
-        const created_at = new Date(question?.created_at).toLocaleString(
-          "fa-IR",
-        );
+      {files?.map((file) => {
         return (
           <ListItem
             sx={{
               borderBottom: "1px solid " + grey[500],
             }}
-            key={question?.id}
+            key={file?.id}
             secondaryAction={
               <Box
                 sx={{
@@ -48,11 +38,11 @@ const ListQuestions = async ({
                   marginX: "1rem",
                 }}
               >
-                {session?.user?.email == question?.user?.email && (
+                {session?.user?.is_admin && (
                   <>
                     <IconButton
                       component={Link}
-                      href={`/questions/${question?.id}/delete`}
+                      href={`/admin/${file?.id}/delete`}
                       edge="end"
                       sx={{
                         backgroundColor: "error.main",
@@ -66,7 +56,7 @@ const ListQuestions = async ({
                     </IconButton>
                     <IconButton
                       component={Link}
-                      href={`/questions/${question?.id}/edit`}
+                      href={`/admin/${file?.id}/edit`}
                       edge="end"
                       sx={{
                         color: "white",
@@ -86,9 +76,9 @@ const ListQuestions = async ({
           >
             <ListItemButton
               component={Link}
-              href={`/questions/${question?.id}`}
+              href={`/admin/${file?.id}`}
               role={undefined}
-              sx={{ padding: "0.5rem" }}
+              sx={{ padding: "1rem" }}
             >
               <Box
                 sx={{
@@ -97,29 +87,7 @@ const ListQuestions = async ({
                   gap: "0.25rem",
                 }}
               >
-                <Chip
-                  sx={[
-                    { width: "fit-content" },
-                    question?.solved
-                      ? { backgroundColor: "success.main", color: "white" }
-                      : {},
-                  ]}
-                  size="small"
-                  label={`جوابها: ${question?.answers?.length}`}
-                />
-                <Typography>{question?.title}</Typography>
-                <Typography
-                  sx={{ fontSize: "0.7rem", color: grey[700] }}
-                  component="span"
-                >
-                  {question?.user?.email}
-                </Typography>
-                <Typography
-                  sx={{ fontSize: "0.7rem", color: grey[700] }}
-                  component="span"
-                >
-                  {created_at}
-                </Typography>
+                <Typography>{file?.title}</Typography>
               </Box>
             </ListItemButton>
           </ListItem>
@@ -129,4 +97,4 @@ const ListQuestions = async ({
   );
 };
 
-export { ListQuestions };
+export { ListAdminFiles };

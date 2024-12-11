@@ -1,9 +1,9 @@
-import "./tiptap.module.css";
 import { Box, Button, ButtonGroup } from "@mui/material";
 import BulletList from "@tiptap/extension-bullet-list";
 import Document from "@tiptap/extension-document";
 import ListItem from "@tiptap/extension-list-item";
 import Paragraph from "@tiptap/extension-paragraph";
+import Link from "@tiptap/extension-link";
 import Heading from "@tiptap/extension-heading";
 import Strike from "@tiptap/extension-strike";
 import Italic from "@tiptap/extension-italic";
@@ -13,12 +13,18 @@ import TextStyle from "@tiptap/extension-text-style";
 import Placeholder from "@tiptap/extension-placeholder";
 import Bold from "@tiptap/extension-bold";
 import { EditorContent, useEditor } from "@tiptap/react";
-import React from "react";
+import React, { useCallback } from "react";
+import { symlink } from "fs";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faListAlt } from "@fortawesome/free-regular-svg-icons";
 
 export default ({ text, setText }: { text: string; setText: Function }) => {
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        style: "outline: none;boder:none;box-shadow:none",
+      },
+    },
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       setText(editor?.getHTML());
@@ -43,13 +49,26 @@ export default ({ text, setText }: { text: string; setText: Function }) => {
       Heading.configure({
         levels: [1, 2, 3],
       }),
+      Link.configure({
+        openOnClick: true,
+        autolink: true,
+        defaultProtocol: "https",
+        protocols: ["http", "https"],
+      }),
     ],
+
     content: `${text}`,
   });
 
   if (!editor) {
     return null;
   }
+  const addLink = () => {
+    const url = prompt("Enter the URL");
+    if (url) {
+      editor.chain().focus().setLink({ href: url }).run();
+    }
+  };
 
   return (
     <Box
@@ -59,7 +78,6 @@ export default ({ text, setText }: { text: string; setText: Function }) => {
         gap: "1rem",
         border: "1px solid gray",
         borderRadius: "0.5rem",
-        padding: "0.5rem",
       }}
     >
       <Box
@@ -68,6 +86,10 @@ export default ({ text, setText }: { text: string; setText: Function }) => {
           flexDirection: "row",
           alignItems: "center",
           gap: "1rem",
+          flexWrap: "wrap",
+          paddingBottom: "1rem",
+          borderBottom: "1px solid gray",
+          padding: "1rem",
         }}
       >
         {/* <IconButton */}
@@ -81,7 +103,7 @@ export default ({ text, setText }: { text: string; setText: Function }) => {
           onInput={(event) =>
             editor.chain().focus().setColor(event.target?.value).run()
           }
-          value={editor.getAttributes("textStyle").color}
+          value={editor.getAttributes("textStyle").color || "#fff"}
         />
 
         <ButtonGroup sx={{ color: "gray" }} variant="outlined">
@@ -109,12 +131,17 @@ export default ({ text, setText }: { text: string; setText: Function }) => {
           >
             H3
           </Button>
+          <Button
+            onClick={() => editor.chain().focus().setParagraph().run()}
+            sx={{ color: "gray", borderColor: "gray" }}
+          >
+            P
+          </Button>
         </ButtonGroup>
         <ButtonGroup>
           <Button
             sx={{ color: "gray", borderColor: "gray", fontWeight: 900 }}
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={editor.isActive("bold") ? "is-active" : ""}
           >
             B
           </Button>
@@ -138,16 +165,19 @@ export default ({ text, setText }: { text: string; setText: Function }) => {
           >
             I
           </Button>
+          <Button
+            sx={{
+              color: "gray",
+              borderColor: "gray",
+              fontStyle: "italic",
+            }}
+            onClick={() => addLink()}
+          >
+            L
+          </Button>
         </ButtonGroup>
       </Box>
-      <EditorContent
-        style={{
-          "*": {
-            color: "blue",
-          },
-        }}
-        editor={editor}
-      />
+      <EditorContent editor={editor} />
     </Box>
   );
 };

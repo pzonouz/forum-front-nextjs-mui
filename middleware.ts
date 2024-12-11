@@ -19,6 +19,10 @@ export default auth((req) => {
     const url = new URL("/signin", req.nextUrl.origin);
     return Response.redirect(url);
   }
+  if ((!req.auth || !req.auth?.user?.is_admin) && pathname.endsWith("admin")) {
+    const url = new URL("/signin", req.nextUrl.origin);
+    return Response.redirect(url);
+  }
 });
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],

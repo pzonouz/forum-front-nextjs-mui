@@ -1,31 +1,28 @@
 "use client";
 
-import { Box, Fab, FormHelperText, TextField, Typography } from "@mui/material";
+import { Box, Fab, TextField, Typography } from "@mui/material";
 import { ModalComponenet } from "../Shared/ModalComponent";
 import AddIcon from "@mui/icons-material/Add";
 import { useActionState, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { FilesComponent } from "../File/FilesComponent";
-import { CreateQuestionAction } from "@/app/actions/Question";
-import { translate } from "@/app/actions/translate";
-import Tiptap from "../Shared/Tiptap";
+import { FileComponent } from "./FileComponent";
+import { CreateAdminFileAction } from "@/app/actions/File";
 
-const CreateQuestion = () => {
+const CreateAdminFile = () => {
   const [open, setOpen] = useState(false);
-  const [filenames, setFilenames] = useState([]);
-  const [text, setText] = useState("");
+  const [filename, setFilename] = useState("");
   const session = useSession();
   const router = useRouter();
   const [state, action, loading] = useActionState(
-    CreateQuestionAction.bind(null, text, filenames),
+    CreateAdminFileAction.bind(null, filename),
     null,
   );
   useEffect(() => {
     if (state?.success) {
       setOpen(false);
-      setFilenames([]);
+      setFilename("");
     }
   }, [state]);
   return (
@@ -71,19 +68,7 @@ const CreateQuestion = () => {
             helperText={state?.error?.fieldErrors?.title}
             error={!!state?.error?.fieldErrors?.title}
           />
-          <Typography
-            component={"p"}
-            sx={{ color: "text.secondary", marginBottom: "-1rem" }}
-          >
-            توضیحات
-          </Typography>
-          <Tiptap text={text} setText={setText} />
-          {state?.error?.formErrors.length! > 0 && (
-            <FormHelperText error>
-              {translate(state?.error?.formErrors)}
-            </FormHelperText>
-          )}
-          <FilesComponent filenames={filenames!} setFilenames={setFilenames} />
+          <FileComponent filename={filename!} setFilename={setFilename} />
           <LoadingButton
             loading={loading}
             type="submit"
@@ -97,4 +82,4 @@ const CreateQuestion = () => {
     </Box>
   );
 };
-export { CreateQuestion };
+export { CreateAdminFile };

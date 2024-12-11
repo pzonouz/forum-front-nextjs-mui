@@ -4,26 +4,24 @@ import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 
-const questionSchema = z.object({
+const fileSchema = z.object({
   title: z.string().min(5, { message: "حداقل ۵ حرف باید داشته باشد" }),
-  description: z.string().min(10, { message: "حداقل ۱۰ حرف باید داشته باشد" }),
-  filenames: z.array(z.string()).nullish(),
+  filename: z.string().min(1, { message: "این فیلد باید پر شود" }),
 });
-const CreateQuestionAction = async (
-  text: string,
-  filenames: string[],
+export type AdminFileType = z.infer<typeof fileSchema>;
+const CreateAdminFileAction = async (
+  filename: string,
   _prevState: any,
   formData: FormData,
 ) => {
   const session = await auth();
-  formData.append("description", text);
+  formData.append("filename", filename);
   const rawData = Object.fromEntries(formData);
-  const validatedData = questionSchema.safeParse(rawData);
+  const validatedData = fileSchema.safeParse(rawData);
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
-  validatedData.data.filenames = filenames;
-  const res = await fetch(`${process.env.BACKEND_URL}/questions/`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/files/`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -33,7 +31,7 @@ const CreateQuestionAction = async (
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidateTag("Question");
+    revalidateTag("File");
     return { success: true };
   } else {
     const error = await res.json();
@@ -41,22 +39,20 @@ const CreateQuestionAction = async (
     return { error: errorObj, data: validatedData.data };
   }
 };
-const UpdateQuestionAction = async (
+const UpdateAdminFileAction = async (
   id: string,
-  text: string,
-  filenames: string[],
+  filename: string,
   _prevState: any,
   formData: FormData,
 ) => {
   const session = await auth();
+  formData.append("filename", filename);
   const rawData = Object.fromEntries(formData);
-  rawData.description = text;
-  const validatedData = questionSchema.safeParse(rawData);
+  const validatedData = fileSchema.safeParse(rawData);
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
-  validatedData.data.filenames = filenames;
-  const res = await fetch(`${process.env.BACKEND_URL}/questions/${id}`, {
+  const res = await fetch(`${process.env.BACKEND_URL}/files/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: {
@@ -66,8 +62,8 @@ const UpdateQuestionAction = async (
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidateTag("Question");
-    redirect(`/questions/${id}`);
+    revalidateTag("File");
+    redirect(`/admin`);
   } else {
     const error = await res.json();
     const errorObj = { formErrors: JSON.stringify(error.message) };
@@ -75,20 +71,20 @@ const UpdateQuestionAction = async (
   }
 };
 
-const DeleteQuestionAction = async (
+const DeleteAdminFileAction = async (
   id: any,
   _prevState: any,
   _formData: FormData,
 ) => {
   const session = await auth();
-  await fetch(`${process.env.BACKEND_URL}/questions/${id}`, {
+  await fetch(`${process.env.BACKEND_URL}/files/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${session?.access}`,
     },
   });
-  revalidateTag("Question");
-  redirect("/questions");
+  revalidateTag("File");
+  redirect("/admin");
 };
-export { CreateQuestionAction, UpdateQuestionAction, DeleteQuestionAction };
+export { CreateAdminFileAction, UpdateAdminFileAction, DeleteAdminFileAction };

@@ -9,7 +9,6 @@ const SearchListView = async ({ query }: { query: string }) => {
     await res.json();
   if (data?.questions.length === 0 && data?.answers.length === 0)
     return <Typography>نتیجه ای یافت نشد</Typography>;
-  console.log(data?.answers);
   return (
     <Box>
       <Box>
