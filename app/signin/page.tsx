@@ -74,7 +74,7 @@ const page = () => {
       <MUILink
         sx={{ textDecoration: "none" }}
         component={Link}
-        href="/forget_password"
+        href="/reset-password"
       >
         فراموشی رمز عبور
       </MUILink>

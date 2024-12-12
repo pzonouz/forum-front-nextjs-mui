@@ -79,17 +79,17 @@ const signinAction = async (_prevState: any, formData: FormData) => {
 };
 
 const forgetPasswordSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email({ message: "فرمت ایمیل درست نیست" }),
 });
 
-const forgetPasswordAction = async (_prevState: any, formData: FormData) => {
+const resetPasswordAction = async (_prevState: any, formData: FormData) => {
   const rawData = Object.fromEntries(formData);
   const validatedData = forgetPasswordSchema.safeParse(rawData);
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
   try {
-    const res = await fetch(`${process.env.BACKEND_URL}/auth/forget_password`, {
+    const res = await fetch(`${process.env.BACKEND_URL}/auth/reset_password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -99,11 +99,79 @@ const forgetPasswordAction = async (_prevState: any, formData: FormData) => {
     if (res.ok) {
       return { success: true };
     } else {
-      return { error: await res.json() };
+      const err = { formErrors: JSON.stringify(await res.json()) };
+      return { error: err, data: validatedData.data };
     }
   } catch {
-    return { error: "ایراد در سرور" };
+    const err = { formError: "ایراد در سرور" };
+    return { error: err, data: validatedData.data };
+  }
+};
+const forgetPasswordCallbackSchema = z
+  .object({
+    password: z.string().min(1, { message: "این فیلد باید پر شود" }),
+    password_confirm: z
+      .string()
+      .min(1)
+      .regex(
+        /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/,
+        {
+          message:
+            "حداقل ۸ حرف،حداقل یک حرف کوچک،حداقل یک حرف بزرگ،حداقل یک عدد،حداقل یک نماد و حداقل یک کاراکتر خاص",
+        },
+      ),
+
+    token: z.string().nullish(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.password !== value.password_confirm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "پسوردها مطابقت ندارد",
+        path: ["password_confirm"],
+      });
+    }
+  });
+
+const forgetPasswordCallbackAction = async (
+  token: string,
+  _prevState: any,
+  formData: FormData,
+) => {
+  formData.append("token", token);
+  const rawData = Object.fromEntries(formData);
+  const validatedData = forgetPasswordCallbackSchema.safeParse(rawData);
+  if (validatedData.error) {
+    return { error: validatedData.error.flatten(), data: rawData };
+  }
+  try {
+    const res = await fetch(
+      `${process.env.BACKEND_URL}/auth/reset_password_callback`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validatedData.data),
+      },
+    );
+    if (res.ok) {
+      return { success: true };
+    } else {
+      const err = {
+        formErrors: JSON.stringify(await res.json()),
+      };
+      return { error: err, data: validatedData.data };
+    }
+  } catch {
+    const err = { formError: "ایراد در سرور" };
+    return { error: err, data: validatedData.data };
   }
 };
 
-export { signupAction, signinAction, forgetPasswordAction };
+export {
+  signupAction,
+  signinAction,
+  resetPasswordAction,
+  forgetPasswordCallbackAction,
+};
