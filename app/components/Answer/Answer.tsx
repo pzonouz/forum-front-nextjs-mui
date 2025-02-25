@@ -61,7 +61,7 @@ const Answer = async ({ questionId }: { questionId: string }) => {
                     { color: "primary.main" },
                   ]}
                   component={Link}
-                  href={`/answers/${answer?.id}/edit`}
+                  href={`/Q&A/answers/${answer?.id}/edit`}
                 >
                   <EditIcon />
                 </IconButton>
@@ -72,7 +72,7 @@ const Answer = async ({ questionId }: { questionId: string }) => {
                     { color: "error.main" },
                   ]}
                   component={Link}
-                  href={`/answers/${answer?.id}/delete`}
+                  href={`/Q&A/answers/${answer?.id}/delete`}
                 >
                   <DeleteIcon />
                 </IconButton>

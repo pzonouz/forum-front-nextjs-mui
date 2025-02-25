@@ -29,102 +29,106 @@ const ListQuestions = async ({
   const questions: FileType[] = await resQuestions.json();
   return (
     <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-      {questions?.map((question) => {
-        const created_at = new Date(question?.created_at).toLocaleString(
-          "fa-IR",
-        );
-        return (
-          <ListItem
-            sx={{
-              borderBottom: "1px solid " + grey[500],
-            }}
-            key={question?.id}
-            secondaryAction={
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "2rem",
-                  marginX: "1rem",
-                }}
-              >
-                {session?.user?.email == question?.user?.email && (
-                  <>
-                    <IconButton
-                      component={Link}
-                      href={`/questions/${question?.id}/delete`}
-                      edge="end"
-                      sx={{
-                        backgroundColor: "error.main",
-                        color: "white",
-                        "&:hover": {
-                          backgroundColor: "error.dark",
-                        },
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                    <IconButton
-                      component={Link}
-                      href={`/questions/${question?.id}/edit`}
-                      edge="end"
-                      sx={{
-                        color: "white",
-                        backgroundColor: "primary.main",
-                        "&:hover": {
-                          backgroundColor: "primary.dark",
-                        },
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-            }
-            disablePadding
-          >
-            <ListItemButton
-              component={Link}
-              href={`/questions/${question?.id}`}
-              role={undefined}
-              sx={{ padding: "0.5rem" }}
+      {questions?.length == 0 ? (
+        <Box sx={{ padding: "1rem" }}>هیچ سوالی وجود ندارد</Box>
+      ) : (
+        questions?.map((question) => {
+          const created_at = new Date(question?.created_at).toLocaleString(
+            "fa-IR",
+          );
+          return (
+            <ListItem
+              sx={{
+                borderBottom: "1px solid " + grey[500],
+              }}
+              key={question?.id}
+              secondaryAction={
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "2rem",
+                    marginX: "1rem",
+                  }}
+                >
+                  {session?.user?.email == question?.user?.email && (
+                    <>
+                      <IconButton
+                        component={Link}
+                        href={`/Q&A/questions/${question?.id}/delete`}
+                        edge="end"
+                        sx={{
+                          backgroundColor: "error.main",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "error.dark",
+                          },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        component={Link}
+                        href={`/Q&A/questions/${question?.id}/edit`}
+                        edge="end"
+                        sx={{
+                          color: "white",
+                          backgroundColor: "primary.main",
+                          "&:hover": {
+                            backgroundColor: "primary.dark",
+                          },
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+              }
+              disablePadding
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.25rem",
-                }}
+              <ListItemButton
+                component={Link}
+                href={`/Q&A/questions/${question?.id}`}
+                role={undefined}
+                sx={{ padding: "0.5rem" }}
               >
-                <Chip
-                  sx={[
-                    { width: "fit-content" },
-                    question?.solved
-                      ? { backgroundColor: "success.main", color: "white" }
-                      : {},
-                  ]}
-                  size="small"
-                  label={`جوابها: ${question?.answers?.length}`}
-                />
-                <Typography>{question?.title}</Typography>
-                <Typography
-                  sx={{ fontSize: "0.7rem", color: grey[700] }}
-                  component="span"
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.25rem",
+                  }}
                 >
-                  {question?.user?.email}
-                </Typography>
-                <Typography
-                  sx={{ fontSize: "0.7rem", color: grey[700] }}
-                  component="span"
-                >
-                  {created_at}
-                </Typography>
-              </Box>
-            </ListItemButton>
-          </ListItem>
-        );
-      })}
+                  <Chip
+                    sx={[
+                      { width: "fit-content" },
+                      question?.solved
+                        ? { backgroundColor: "success.main", color: "white" }
+                        : {},
+                    ]}
+                    size="small"
+                    label={`جوابها: ${question?.answers?.length}`}
+                  />
+                  <Typography>{question?.title}</Typography>
+                  <Typography
+                    sx={{ fontSize: "0.7rem", color: grey[700] }}
+                    component="span"
+                  >
+                    {question?.user?.email}
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: "0.7rem", color: grey[700] }}
+                    component="span"
+                  >
+                    {created_at}
+                  </Typography>
+                </Box>
+              </ListItemButton>
+            </ListItem>
+          );
+        })
+      )}
     </List>
   );
 };

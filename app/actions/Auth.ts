@@ -75,7 +75,7 @@ const signinAction = async (_prevState: any, formData: FormData) => {
     const formError = { formErrors: "Email and password doesn not match" };
     return { error: formError, data: rawData };
   }
-  redirect("/questions");
+  redirect("/Q&A/questions");
 };
 
 const forgetPasswordSchema = z.object({

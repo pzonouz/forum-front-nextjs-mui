@@ -33,13 +33,17 @@ const CreateQuestion = () => {
       <Fab
         onClick={() => {
           if (!(session?.status === "authenticated")) {
-            router.push("/signin");
+            router.push("/Q&A/signin");
             return;
           }
           setOpen(true);
         }}
         color="primary"
-        sx={{ position: "fixed", bottom: "1rem", right: "1rem" }}
+        sx={{
+          position: "fixed",
+          bottom: "1rem",
+          right: { xs: "1rem", md: "31rem" },
+        }}
       >
         <AddIcon />
       </Fab>
@@ -48,19 +52,10 @@ const CreateQuestion = () => {
           component="form"
           action={action}
           sx={{
-            maxHeight: "90vh",
-            overflow: "hidden",
-            overflowY: "auto",
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
             display: "flex",
             flexDirection: "column",
             gap: "1rem",
             padding: "2rem",
-            backgroundColor: "background.paper",
-            width: "90%",
           }}
         >
           <TextField

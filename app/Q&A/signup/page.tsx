@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { useActionState } from "react";
 import { LoadingButton } from "@mui/lab";
-import { signupAction } from "../actions/Auth";
+import { signupAction } from "@/app/actions/Auth";
 
 export default function SignUp() {
   const [state, action, loading] = useActionState(signupAction, null);
@@ -19,10 +19,10 @@ export default function SignUp() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: 2,
-        maxWidth: "20rem",
+        paddingX: "2rem",
         marginX: "auto",
         marginTop: "5rem",
+        gap: 2,
       }}
       component="form"
       action={action}

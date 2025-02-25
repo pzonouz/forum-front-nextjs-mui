@@ -1,4 +1,4 @@
-import { Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import { JSXElementConstructor, ReactElement } from "react";
 
 const ModalComponenet = ({
@@ -12,12 +12,25 @@ const ModalComponenet = ({
 }) => {
   return (
     <Modal
+      sx={{ marginX: "auto" }}
       open={open}
       onClose={() => {
         setOpen(false);
       }}
     >
-      {children}
+      <Box
+        sx={{
+          marginX: "auto",
+          backgroundColor: "white",
+          marginTop: "4rem",
+          maxWidth: { xs: "90%", md: "35rem" },
+          maxHeight: "90vh",
+          overflow: "hidden",
+          overflowY: "auto",
+        }}
+      >
+        {children}
+      </Box>
     </Modal>
   );
 };

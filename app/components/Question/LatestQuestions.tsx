@@ -1,20 +1,18 @@
-import { FileType } from "@/app/types/FileType";
+import { QuestionType } from "@/app/types/QuestionTypes";
 import { Box, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
-import { SearchFile } from "../Navigation/SearchFile";
 
-const ListFiles = async (props) => {
-  const resFiles = await fetch(`${process.env.BACKEND_URL}/files`);
-  const files: FileType[] = await resFiles.json();
+const LatestQuestions = (props) => {
+  const { questions, ...others } = props;
   return (
-    <Box {...props}>
-      <SearchFile />
+    <Box {...others}>
       <Box
         sx={{
           border: "1px solid #D1D5DB",
           width: "100%",
           display: "flex",
           flexDirection: "column",
+          marginTop: "6rem",
         }}
       >
         <Typography
@@ -22,12 +20,12 @@ const ListFiles = async (props) => {
           component="h1"
           sx={{ textAlign: "center", paddingY: "1rem" }}
         >
-          آخرین فایلهای اضافه شده
+          آخرین سوالات
         </Typography>
-        {files?.map((file, index) => (
+        {questions?.map((question: QuestionType, index: number) => (
           <MuiLink
             component={Link}
-            key={file?.title}
+            key={question?.title}
             sx={[
               {
                 padding: "1rem",
@@ -40,13 +38,13 @@ const ListFiles = async (props) => {
                 backgroundColor: "#f7f8f9",
               },
             ]}
-            href={`/files/${file.id}`}
+            href={`/Q&A/questions/${question.id}`}
           >
-            {file?.title}
+            {question?.title}
           </MuiLink>
         ))}
       </Box>
     </Box>
   );
 };
-export { ListFiles };
+export { LatestQuestions };

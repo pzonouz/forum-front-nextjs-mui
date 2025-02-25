@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import * as z from "zod";
 import { AnswerType } from "../types/AnswerTypes";
 
-const session = await auth();
 const answerSchema = z.object({
   id: z.string().nullish(),
   description: z.string().min(10),
@@ -23,6 +22,7 @@ const CreateAnswerAction = async (
   if (validatedData.error) {
     return { error: validatedData.error.flatten(), data: rawData };
   }
+  const session = await auth();
   validatedData.data.questionId = id;
   validatedData.data.filenames = filenames;
   const res = await fetch(`${process.env.BACKEND_URL}/answers/`, {
@@ -35,8 +35,8 @@ const CreateAnswerAction = async (
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidatePath(`/questions/${id}`);
-    redirect(`/questions/${id}`);
+    revalidatePath(`/Q&A/questions/${id}`);
+    redirect(`/Q&A/questions/${id}`);
   } else {
     const error = await res.json();
     const errorObj = { formErrors: JSON.stringify(error.message) };
@@ -67,8 +67,8 @@ const UpdateAnswerAction = async (
     body: JSON.stringify(validatedData.data),
   });
   if (res.ok) {
-    revalidatePath(`/questions/${questionId}`);
-    redirect(`/questions/${questionId}`);
+    revalidatePath(`/Q&A/questions/${questionId}`);
+    redirect(`Q&A/questions/${questionId}`);
   } else {
     const error = await res.json();
     const errorObj = { formErrors: JSON.stringify(error.message) };
@@ -81,6 +81,7 @@ const SolvedAnswerAction = async (
   _prevState: any,
   _formData: FormData,
 ) => {
+  const session = await auth();
   const resSolved = await fetch(
     `${process.env.BACKEND_URL}/answers/solving/${id}`,
     {
@@ -94,7 +95,7 @@ const SolvedAnswerAction = async (
   );
   if (resSolved.ok) {
     revalidateTag("Answer");
-    revalidatePath(`/questions/${quesionId}`);
+    revalidatePath(`/Q&A/questions/${quesionId}`);
   }
 };
 
@@ -113,8 +114,8 @@ const DeleteAnswerAction = async (
       Authorization: `Bearer ${session?.access}`,
     },
   });
-  revalidatePath(`/questions/${answer?.question?.id}`);
-  redirect(`/questions/${answer?.question?.id}`);
+  revalidatePath(`/Q&A/questions/${answer?.question?.id}`);
+  redirect(`/Q&A/questions/${answer?.question?.id}`);
 };
 export {
   CreateAnswerAction,

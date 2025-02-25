@@ -32,7 +32,7 @@ const ResponsiveAppBar = async () => {
           </Typography>
           <MobileMenu pages={pages} />
           <SearchBarComponent />
-          <DesktopMenu pages={pages} />
+          {/* <DesktopMenu pages={pages} /> */}
           <UserMenu session={session!} />
         </Toolbar>
       </Container>

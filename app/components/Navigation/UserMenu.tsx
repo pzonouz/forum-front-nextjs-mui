@@ -34,8 +34,6 @@ const UserMenu = ({ session }: { session: Session }) => {
         onClose={() => {
           setModalOpen(false);
         }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
         <Box
           sx={{
@@ -61,7 +59,7 @@ const UserMenu = ({ session }: { session: Session }) => {
           >
             <Button
               onClick={() => {
-                signOut({ redirectTo: "/signin" });
+                signOut({ redirectTo: "/Q&A/signin" });
               }}
               color="error"
               variant="contained"
@@ -129,7 +127,7 @@ const UserMenu = ({ session }: { session: Session }) => {
           {!session?.user && (
             <MenuItem
               component={Link}
-              href="/signin"
+              href="/Q&A/signin"
               key={2}
               onClick={handleCloseUserMenu}
             >
@@ -138,7 +136,7 @@ const UserMenu = ({ session }: { session: Session }) => {
           )}
 
           {!session?.user && (
-            <MenuItem key={3} component={Link} href="/signup">
+            <MenuItem key={3} component={Link} href="/Q&A/signup">
               <Typography sx={{ textAlign: "center" }}>ثبت نام</Typography>
             </MenuItem>
           )}

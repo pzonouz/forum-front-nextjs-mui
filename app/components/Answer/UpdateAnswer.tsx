@@ -17,16 +17,12 @@ const UpdateAnswer = ({ answer }: { answer: AnswerType }) => {
       component="form"
       action={action}
       sx={{
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
         padding: "2rem",
         backgroundColor: "background.paper",
-        width: "90%",
+        marginX: "auto",
       }}
     >
       <>

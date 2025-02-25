@@ -1,4 +1,5 @@
 "use client";
+import { googleSigninAction } from "@/app/actions/Auth";
 import { DeleteQuestionAction } from "@/app/actions/Question";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Typography } from "@mui/material";
@@ -15,7 +16,7 @@ const page = () => {
   return (
     <Box
       sx={{
-        width: "90%",
+        maxWidth: "30rem",
         position: "fixed",
         top: "50%",
         left: "50%",

@@ -2,8 +2,12 @@
 import {
   alpha,
   Box,
+  FormControl,
   IconButton,
+  Input,
+  InputAdornment,
   InputBase,
+  InputLabel,
   styled,
   Typography,
 } from "@mui/material";
@@ -57,74 +61,145 @@ const SearchBarComponent = () => {
   const [searchActive, setSearchActive] = useState(false);
   const router = useRouter();
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "row",
-        flexGrow: 1,
-      }}
-    >
-      <Search
-        sx={[
-          searchActive && {
-            marginRight: "-2rem",
-          },
-          {
-            width: searchActive ? "90%" : "0",
-            transition:
-              "opacity 0.5s ease, visibility 0s 0.5s, width 0.5s ease",
-          },
-        ]}
+    <>
+      <Box
+        sx={{
+          display: { xs: "none", md: "flex" },
+          alignItems: "center",
+          flexDirection: "row",
+          flexGrow: 1,
+        }}
       >
-        {searchActive && (
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-        )}
-        <StyledInputBase
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              router.push(`/search/?q=${e.currentTarget.value}`);
-              setSearchActive(false);
-            }
-          }}
-          placeholder="Search…"
-        />
-      </Search>
+        <Search
+          sx={[
+            searchActive && {
+              marginRight: "-2rem",
+            },
+            {
+              width: searchActive ? "90%" : "0",
+              transition:
+                "opacity 0.5s ease, visibility 0s 0.5s, width 0.5s ease",
+            },
+          ]}
+        >
+          {searchActive && (
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+          )}
+          <StyledInputBase
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                router.push(`/search/?q=${e.currentTarget.value}`);
+                setSearchActive(false);
+              }
+            }}
+            placeholder="Search…"
+          />
+        </Search>
 
-      {searchActive && (
-        <IconButton
-          sx={{ color: "white" }}
-          onClick={() => setSearchActive(false)}
+        {searchActive && (
+          <IconButton
+            sx={{ color: "white" }}
+            onClick={() => setSearchActive(false)}
+          >
+            <ChevronRight />
+          </IconButton>
+        )}
+        {!searchActive && (
+          <IconButton onClick={() => setSearchActive(true)}>
+            <SearchIcon sx={{ color: "white", fontSize: "2rem" }} />
+          </IconButton>
+        )}
+        {!searchActive && (
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              fontWeight: 600,
+              textDecoration: "none",
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              color: "inherit",
+            }}
+          >
+            انجمن
+          </Typography>
+        )}
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
+          flexGrow: 1,
+        }}
+      >
+        <Search
+          sx={[
+            searchActive && {
+              marginRight: "-2rem",
+            },
+            {
+              width: searchActive ? "90%" : "0",
+              transition:
+                "opacity 0.5s ease, visibility 0s 0.5s, width 0.5s ease",
+            },
+          ]}
         >
-          <ChevronRight />
-        </IconButton>
-      )}
-      {!searchActive && (
-        <IconButton onClick={() => setSearchActive(true)}>
-          <SearchIcon sx={{ color: "white", fontSize: "2rem" }} />
-        </IconButton>
-      )}
-      {!searchActive && (
-        <Typography
-          variant="h5"
-          noWrap
-          component="a"
-          href="/"
-          sx={{
-            mr: 2,
-            fontWeight: 600,
-            textDecoration: "none",
-            display: { xs: "flex", md: "none" },
-            flexGrow: 1,
-            color: "inherit",
-          }}
-        >
-          انجمن
-        </Typography>
-      )}
-    </Box>
+          {searchActive && (
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+          )}
+          <StyledInputBase
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                router.push(`/search/?q=${e.currentTarget.value}`);
+                setSearchActive(false);
+              }
+            }}
+            placeholder="Search…"
+          />
+        </Search>
+
+        {searchActive && (
+          <IconButton
+            sx={{ color: "white" }}
+            onClick={() => setSearchActive(false)}
+          >
+            <ChevronRight />
+          </IconButton>
+        )}
+        {!searchActive && (
+          <IconButton onClick={() => setSearchActive(true)}>
+            <SearchIcon sx={{ color: "white", fontSize: "2rem" }} />
+          </IconButton>
+        )}
+        {!searchActive && (
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              fontWeight: 600,
+              textDecoration: "none",
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              color: "inherit",
+            }}
+          >
+            انجمن
+          </Typography>
+        )}
+      </Box>
+    </>
   );
 };
 

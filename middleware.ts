@@ -2,12 +2,15 @@ import { auth } from "@/auth";
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
-  // Bypass the middleware for specific routes
+  if (pathname === "/") {
+    const url = new URL("/Q&A", req.nextUrl.origin);
+    return Response.redirect(url);
+  }
   if (
     pathname === "/signin" ||
     pathname === "/signup" ||
     pathname === "/questions" ||
-    /^\/questions\/\d+$/.test(pathname) // Matches /questions/[id]
+    /^\/questions\/\d+$/.test(pathname)
   ) {
     return;
   }
@@ -16,11 +19,11 @@ export default auth((req) => {
     (/^\/questions\/\d+\/edit$/.test(pathname) ||
       /^\/questions\/\d+\/delete$/.test(pathname))
   ) {
-    const url = new URL("/signin", req.nextUrl.origin);
+    const url = new URL("/Q&A/signin", req.nextUrl.origin);
     return Response.redirect(url);
   }
   if ((!req.auth || !req.auth?.user?.is_admin) && pathname.endsWith("admin")) {
-    const url = new URL("/signin", req.nextUrl.origin);
+    const url = new URL("/Q&A/signin", req.nextUrl.origin);
     return Response.redirect(url);
   }
 });

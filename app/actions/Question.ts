@@ -67,7 +67,7 @@ const UpdateQuestionAction = async (
   });
   if (res.ok) {
     revalidateTag("Question");
-    redirect(`/questions/${id}`);
+    redirect(`/Q&A/questions/${id}`);
   } else {
     const error = await res.json();
     const errorObj = { formErrors: JSON.stringify(error.message) };
@@ -89,6 +89,6 @@ const DeleteQuestionAction = async (
     },
   });
   revalidateTag("Question");
-  redirect("/questions");
+  redirect("/Q&A/questions");
 };
 export { CreateQuestionAction, UpdateQuestionAction, DeleteQuestionAction };

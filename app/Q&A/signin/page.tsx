@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useActionState } from "react";
-import { signinAction } from "../actions/Auth";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { signinAction } from "@/app/actions/Auth";
 
 const page = () => {
   const [state, action, loading] = useActionState(signinAction, null);

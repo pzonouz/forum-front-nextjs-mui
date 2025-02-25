@@ -20,15 +20,10 @@ const UpdateQuestion = ({ question }: { question: QuestionType }) => {
       component="form"
       action={action}
       sx={{
-        position: "fixed",
-        top: "6rem",
-        left: "50%",
-        transform: "translate(-50%)",
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
-        paddingX: "2rem",
-        paddingBottom: "4rem",
+        padding: "2rem",
         backgroundColor: "background.paper",
         maxHeight: "90vh",
         overflow: "hidden",

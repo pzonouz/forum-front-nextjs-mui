@@ -73,7 +73,7 @@ const page = async ({ params }: { params: any }) => {
               <IconButton
                 sx={{ color: "primary.main" }}
                 component={Link}
-                href={`/questions/${parameters?.id}/edit`}
+                href={`/Q&A/questions/${parameters?.id}/edit`}
               >
                 <EditIcon />
               </IconButton>
@@ -82,7 +82,7 @@ const page = async ({ params }: { params: any }) => {
               <IconButton
                 sx={{ color: "error.main" }}
                 component={Link}
-                href={`/questions/${parameters?.id}/delete`}
+                href={`/Q&A/questions/${parameters?.id}/delete`}
               >
                 <DeleteIcon />
               </IconButton>
